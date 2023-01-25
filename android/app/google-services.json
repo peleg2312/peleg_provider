@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "770340067283",
+    "project_id": "cool-project-26dfb",
+    "storage_bucket": "cool-project-26dfb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770340067283:android:f1614d64c443d6f9da0126",
+        "android_client_info": {
+          "package_name": "com.example.peleg_provider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770340067283-tdb3d4rmc863qrnjh9h42gg3j3naekml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqhkq_ojn34sPxpIy6UPNH5RsPm-EECcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770340067283-tdb3d4rmc863qrnjh9h42gg3j3naekml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
