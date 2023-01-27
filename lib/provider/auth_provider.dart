@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class AuthProvider extends ChangeNotifier {
   String Uid;
   final _auth = FirebaseAuth.instance;
-  var _isLoading = false;
+  var isLoading = false;
 
   void submitAuthForm(
     String email,
@@ -19,8 +19,8 @@ class AuthProvider extends ChangeNotifier {
     UserCredential authResult;
 
     try {
-      _isLoading = true;
-
+      isLoading = true;
+      notifyListeners();
       if (isLogin) {
         authResult = await _auth.signInWithEmailAndPassword(
           email: email,
@@ -52,10 +52,12 @@ class AuthProvider extends ChangeNotifier {
           backgroundColor: Theme.of(ctx).errorColor,
         ),
       );
-      _isLoading = false;
+      isLoading = false;
+      notifyListeners();
     } catch (err) {
       print(err);
-      _isLoading = false;
+      isLoading = false;
+      notifyListeners();
     }
   }
 }
