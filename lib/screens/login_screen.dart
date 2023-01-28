@@ -75,12 +75,12 @@ class _SignInPageState extends State<SignInPage> {
             // hintText: 'Enter your full name',
             labelText: 'Email',
             labelStyle: TextStyle(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 49, 49, 49),
                 fontWeight: FontWeight.w500,
                 fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 49, 49, 49),
               ),
             ),
           ),
@@ -108,12 +108,12 @@ class _SignInPageState extends State<SignInPage> {
           decoration: InputDecoration(
             labelText: 'Password',
             labelStyle: TextStyle(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 49, 49, 49),
                 fontWeight: FontWeight.w500,
                 fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 49, 49, 49),
               ),
             ),
           ),

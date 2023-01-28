@@ -75,12 +75,12 @@ class _AuthScreenState extends State<AuthScreen> {
             // hintText: 'Enter your full name',
             labelText: 'Name',
             labelStyle: TextStyle(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 64, 64, 64),
                 fontWeight: FontWeight.w500,
                 fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 61, 61, 61),
               ),
             ),
           ),
@@ -109,12 +109,12 @@ class _AuthScreenState extends State<AuthScreen> {
             // hintText: 'Enter your full name',
             labelText: 'Email',
             labelStyle: TextStyle(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 63, 63, 63),
                 fontWeight: FontWeight.w500,
                 fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 63, 63, 63),
               ),
             ),
           ),
@@ -142,12 +142,12 @@ class _AuthScreenState extends State<AuthScreen> {
           decoration: InputDecoration(
             labelText: 'Password',
             labelStyle: TextStyle(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 63, 63, 63),
                 fontWeight: FontWeight.w500,
                 fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromRGBO(226, 222, 211, 1),
+                color: Color.fromARGB(255, 66, 66, 66),
               ),
             ),
           ),
@@ -168,7 +168,7 @@ class _AuthScreenState extends State<AuthScreen> {
           Text(
             'Sign up',
             style: TextStyle(
-                color: Colors.white,
+                color: Color.fromARGB(255, 59, 59, 59),
                 fontSize: 25,
                 fontWeight: FontWeight.w500,
                 height: 1.6),
@@ -179,7 +179,7 @@ class _AuthScreenState extends State<AuthScreen> {
               child: Material(
                 color: Color.fromRGBO(76, 81, 93, 1),
                 child: Icon(Icons.arrow_forward,
-                    color: Colors.white), // button color
+                    color: Color.fromARGB(255, 247, 247, 247)), // button color
               ),
             ),
           ),
@@ -200,7 +200,7 @@ class _AuthScreenState extends State<AuthScreen> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Color.fromARGB(255, 0, 0, 0),
             decoration: TextDecoration.underline,
             decorationThickness: 2,
           ),
