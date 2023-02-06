@@ -20,11 +20,11 @@ class _SignInPageState extends State<SignInPage> {
   var _userPassword = '';
 
   void _trySubmit() {
-    final isValid = _formKey.currentState.validate();
+    final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
 
-    if (isValid) {
-      _formKey.currentState.save();
+    if (isValid!) {
+      _formKey.currentState!.save();
       Provider.of<AuthProvider>(context, listen: false).submitAuthForm(
           _userEmail.trim(),
           _userPassword.trim(),
@@ -62,14 +62,14 @@ class _SignInPageState extends State<SignInPage> {
           keyboardType: TextInputType.name,
           textInputAction: TextInputAction.next,
           key: ValueKey('email'),
-          validator: (value) {
-            if (value.isEmpty || !value.contains('@')) {
+          validator: (String? value) {
+            if (value!.isEmpty || value.contains('@')) {
               return 'Please enter a valid email address.';
             }
             return null;
           },
           onSaved: (value) {
-            _userEmail = value;
+            _userEmail = value!;
           },
           decoration: InputDecoration(
             // hintText: 'Enter your full name',
@@ -96,14 +96,14 @@ class _SignInPageState extends State<SignInPage> {
           keyboardType: TextInputType.name,
           textInputAction: TextInputAction.next,
           key: ValueKey('password'),
-          validator: (value) {
-            if (value.isEmpty || value.length < 7) {
+          validator: (String? value) {
+            if (value!.isEmpty || value.length < 7) {
               return 'Password must be at least 7 characters long.';
             }
             return null;
           },
           onSaved: (value) {
-            _userPassword = value;
+            _userPassword = value!;
           },
           decoration: InputDecoration(
             labelText: 'Password',

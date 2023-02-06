@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
+import 'package:flutter_complete_guide/screens/first_screen.dart';
 import 'package:flutter_complete_guide/screens/login_screen.dart';
-import 'package:flutter_complete_guide/screens/profile.dart';
+import 'package:flutter_complete_guide/screens/task_list/task_main.dart';
+
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/register.dart';
@@ -30,28 +32,21 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 title: 'FlutterChat',
                 theme: ThemeData(
-                  primarySwatch: Colors.pink,
-                  backgroundColor: Colors.pink,
-                  accentColor: Colors.deepPurple,
-                  accentColorBrightness: Brightness.dark,
                   buttonTheme: ButtonTheme.of(context).copyWith(
-                    buttonColor: Colors.pink,
                     textTheme: ButtonTextTheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
-                home: appSnapshot.connectionState != ConnectionState.done
-                    ? SignInPage()
-                    : StreamBuilder(
-                        stream: FirebaseAuth.instance.authStateChanges(),
-                        builder: (ctx, userSnapshot) {
-                          if (userSnapshot.hasData) {
-                            return Profile();
-                          }
-                          return AuthScreen();
-                        }),
+                home: StreamBuilder(
+                    stream: FirebaseAuth.instance.authStateChanges(),
+                    builder: (ctx, userSnapshot) {
+                      if (userSnapshot.hasData) {
+                        return FirstScreen();
+                      }
+                      return AuthScreen();
+                    }),
               );
             }));
   }

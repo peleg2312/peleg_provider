@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,6 +28,17 @@ dependencies:
   cloud_firestore: ^4.3.1
   firebase_core: ^2.4.1
   proste_bezier_curve: ^2.0.2
+  font_awesome_flutter: ^10.3.0
+  connectivity: ^3.0.6
+  modal_progress_hud_nsn: ^0.1.0-nullsafety-0
+  flutter_colorpicker: ^1.0.3
+  flutter_slidable: ^2.0.0
+  share: ^2.0.4
+  launch_review: ^3.0.1
+  url_launcher: ^6.1.8
+  slide_to_act: ^2.0.1
+  table_calendar: ^3.0.8
+  flutter_clean_calendar: ^1.1.0
 
 dependency_overrides:
   firebase_core_platform_interface: ^4.5.1

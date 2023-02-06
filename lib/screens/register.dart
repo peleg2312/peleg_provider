@@ -22,11 +22,11 @@ class _AuthScreenState extends State<AuthScreen> {
   var _userPassword = '';
 
   void _trySubmit() {
-    final isValid = _formKey.currentState.validate();
+    final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
 
-    if (isValid) {
-      _formKey.currentState.save();
+    if (isValid!) {
+      _formKey.currentState!.save();
       Provider.of<AuthProvider>(context, listen: false).submitAuthForm(
           _userEmail.trim(),
           _userPassword.trim(),
@@ -62,13 +62,13 @@ class _AuthScreenState extends State<AuthScreen> {
           keyboardType: TextInputType.name,
           key: ValueKey('username'),
           validator: (value) {
-            if (value.isEmpty || value.length < 4) {
+            if (value!.isEmpty || value.length < 4) {
               return 'Please enter at least 4 characters';
             }
             return null;
           },
           onSaved: (value) {
-            _userName = value;
+            _userName = value!;
           },
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
@@ -97,13 +97,13 @@ class _AuthScreenState extends State<AuthScreen> {
           textInputAction: TextInputAction.next,
           key: ValueKey('email'),
           validator: (value) {
-            if (value.isEmpty || !value.contains('@')) {
+            if (value!.isEmpty || !value.contains('@')) {
               return 'Please enter a valid email address.';
             }
             return null;
           },
           onSaved: (value) {
-            _userEmail = value;
+            _userEmail = value!;
           },
           decoration: InputDecoration(
             // hintText: 'Enter your full name',
@@ -131,13 +131,13 @@ class _AuthScreenState extends State<AuthScreen> {
           textInputAction: TextInputAction.next,
           key: ValueKey('password'),
           validator: (value) {
-            if (value.isEmpty || value.length < 7) {
+            if (value!.isEmpty || value.length < 7) {
               return 'Password must be at least 7 characters long.';
             }
             return null;
           },
           onSaved: (value) {
-            _userPassword = value;
+            _userPassword = value!;
           },
           decoration: InputDecoration(
             labelText: 'Password',

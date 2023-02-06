@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/Widget/signup_clipper.dart';
 
 class SignUpContainer extends StatelessWidget {
-  const SignUpContainer({Key key}) : super(key: key);
+  const SignUpContainer({Key? key}) : super(key: key);
 
   Widget build(BuildContext context) {
     return Stack(

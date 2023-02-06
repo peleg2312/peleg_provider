@@ -5,9 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
-  String Uid;
+  late String Uid;
   final _auth = FirebaseAuth.instance;
   var isLoading = false;
+  bool saving = false;
 
   void submitAuthForm(
     String email,
@@ -17,7 +18,6 @@ class AuthProvider extends ChangeNotifier {
     BuildContext ctx,
   ) async {
     UserCredential authResult;
-
     try {
       isLoading = true;
       notifyListeners();
@@ -31,16 +31,17 @@ class AuthProvider extends ChangeNotifier {
           email: email,
           password: password,
         );
-        await FirebaseFirestore.instance
+        FirebaseFirestore.instance
             .collection('users')
-            .doc(authResult.user.uid)
+            .doc(authResult.user?.uid)
             .set({
           'username': username,
           'email': email,
         });
+        authResult.user?.updateDisplayName(username);
       }
     } on PlatformException catch (err) {
-      var message = 'An error occurred, pelase check your credentials!';
+      String? message = 'An error occurred, pelase check your credentials!';
 
       if (err.message != null) {
         message = err.message;
@@ -48,7 +49,7 @@ class AuthProvider extends ChangeNotifier {
 
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
-          content: Text(message),
+          content: Text(message!),
           backgroundColor: Theme.of(ctx).errorColor,
         ),
       );
@@ -59,5 +60,98 @@ class AuthProvider extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  void addListToFirebase(Color currentColor,
+      TextEditingController listNameController, BuildContext context) async {
+    User? authResult = _auth.currentUser;
+    saving = true;
+    bool isExist = false;
+
+    QuerySnapshot query =
+        await FirebaseFirestore.instance.collection(authResult!.uid).get();
+
+    query.docs.forEach((doc) {
+      if (listNameController.text.toString() == doc.id) {
+        isExist = true;
+      }
+    });
+
+    if (isExist == false && listNameController.text.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(authResult.uid)
+          .doc("TaskList")
+          .collection("Tasks")
+          .doc(listNameController.text.toString().trim())
+          .set({
+        "color": currentColor.value.toString(),
+        "date": DateTime.now().millisecondsSinceEpoch
+      });
+
+      listNameController.clear();
+
+      //pickerColor = Color(0xff6633ff);
+      currentColor = Color(0xff6633ff);
+
+      Navigator.of(context).pop();
+    }
+    if (isExist == true) {
+      showInSnackBar("This list already exists", context, currentColor);
+      saving = false;
+    }
+    if (listNameController.text.isEmpty) {
+      showInSnackBar("Please enter a name", context, currentColor);
+      saving = false;
+    }
+  }
+
+  void addTaskToFirebase(DateTime dateTime,
+      TextEditingController listNameController, BuildContext context) async {
+    User? authResult = _auth.currentUser;
+    saving = true;
+    bool isExist = false;
+
+    QuerySnapshot query =
+        await FirebaseFirestore.instance.collection(authResult!.uid).get();
+
+    query.docs.forEach((doc) {
+      if (listNameController.text.toString() == doc.id) {
+        isExist = true;
+      }
+    });
+
+    if (isExist == false && listNameController.text.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(authResult.uid)
+          .doc("TaskByTime")
+          .collection("Tasks")
+          .doc(listNameController.text.toString().trim())
+          .set({
+        "dateTime": dateTime.toString(),
+        "date": DateTime.now().millisecondsSinceEpoch
+      });
+
+      listNameController.clear();
+
+      Navigator.of(context).pop();
+    }
+    if (isExist == true) {
+      showInSnackBar("This list already exists", context, Colors.grey);
+      saving = false;
+    }
+    if (listNameController.text.isEmpty) {
+      showInSnackBar("Please enter a name", context, Colors.grey);
+      saving = false;
+    }
+  }
+
+  void showInSnackBar(String value, BuildContext context, Color color) {
+    ScaffoldMessenger.of(context)?.removeCurrentSnackBar();
+
+    ScaffoldMessenger.of(context)?.showSnackBar(new SnackBar(
+      content: new Text(value, textAlign: TextAlign.center),
+      backgroundColor: color,
+      duration: Duration(seconds: 3),
+    ));
   }
 }

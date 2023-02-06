@@ -5,7 +5,7 @@ import 'package:flutter_complete_guide/Widget/siginClipper.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
 
 class SigninContainer extends StatelessWidget {
-  const SigninContainer({Key key}) : super(key: key);
+  const SigninContainer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
