@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_complete_guide/Widget/signupContainer.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
-import 'package:flutter_complete_guide/screens/login_screen.dart';
+import 'package:flutter_complete_guide/screens/Auth/login_screen.dart';
 import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {

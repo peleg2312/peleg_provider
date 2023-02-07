@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/model/element.dart';
 import 'package:flutter_complete_guide/screens/task_list/page_detail.dart';
-import 'package:flutter_complete_guide/screens/task_list/page_done.dart';
+import 'package:flutter_complete_guide/screens/page_done.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'page_addlist.dart';
+import 'task_list/page_addlist.dart';
 
-class TaskPage extends StatefulWidget {
+class TournamentPage extends StatefulWidget {
   final auth = FirebaseAuth.instance;
   //final UserCredential user;
 
   //TaskPage({Key key, this.user}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _TaskPageState();
+  State<StatefulWidget> createState() => _TournamentPageState();
 }
 
-class _TaskPageState extends State<TaskPage>
+class _TournamentPageState extends State<TournamentPage>
     with SingleTickerProviderStateMixin {
   int index = 1;
 
@@ -46,12 +46,12 @@ class _TaskPageState extends State<TaskPage>
                       ),
                     ),
                     Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: new Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              'Task',
+                              'Tournament',
                               style: new TextStyle(
                                   fontSize: 30.0, fontWeight: FontWeight.bold),
                             ),
@@ -95,33 +95,7 @@ class _TaskPageState extends State<TaskPage>
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 10.0),
-                          child: Text('Add List',
-                              style: TextStyle(color: Colors.black45)),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: 20,
-                    ),
-                    new Column(
-                      children: <Widget>[
-                        new Container(
-                          width: 50.0,
-                          height: 50.0,
-                          decoration: new BoxDecoration(
-                              color: Color.fromARGB(255, 244, 244, 244),
-                              border: new Border.all(color: Colors.black38),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(7.0))),
-                          child: new IconButton(
-                            icon: new Icon(Icons.history),
-                            onPressed: _doneListTask,
-                            iconSize: 30.0,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.0),
-                          child: Text('Done List',
+                          child: Text('Add Tournament',
                               style: TextStyle(color: Colors.black45)),
                         ),
                       ],

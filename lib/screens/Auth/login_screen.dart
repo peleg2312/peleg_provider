@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/Widget/singinContainer.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
-import 'package:flutter_complete_guide/screens/profile.dart';
-import 'package:flutter_complete_guide/screens/register.dart';
+import 'package:flutter_complete_guide/screens/Auth/register.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {

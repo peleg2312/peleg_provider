@@ -2,21 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_complete_guide/screens/task_list/page_done.dart';
-import 'package:flutter_complete_guide/screens/task_list/page_settings.dart';
-import 'package:flutter_complete_guide/screens/task_list/page_task.dart';
+import 'package:flutter_complete_guide/screens/page_done.dart';
+import 'package:flutter_complete_guide/screens/page_tournament.dart';
 import 'package:flutter_complete_guide/screens/task_list/page_taskByTime.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class TaskApp extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
-  _TaskAppState createState() => _TaskAppState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _TaskAppState extends State<TaskApp> with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
   int _currentIndex = 1;
 
-  final List<Widget> _children = [TaskPage(), SettingsPage()];
+  final List<Widget> _children = [DonePage(), TournamentPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +28,9 @@ class _TaskAppState extends State<TaskApp> with SingleTickerProviderStateMixin {
           fixedColor: Colors.deepPurple,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-                icon: new Icon(FontAwesomeIcons.clock), label: ""),
+                icon: new Icon(FontAwesomeIcons.unsorted), label: ""),
             BottomNavigationBarItem(
                 icon: new Icon(FontAwesomeIcons.calendar), label: ""),
-            BottomNavigationBarItem(
-                icon: new Icon(FontAwesomeIcons.slidersH), label: "")
           ],
         ),
         appBar: AppBar(
@@ -48,7 +46,7 @@ class _TaskAppState extends State<TaskApp> with SingleTickerProviderStateMixin {
                 width: 20,
               ),
               Text(
-                'ListApp',
+                'App',
                 style: TextStyle(color: Colors.black87),
               ),
             ],

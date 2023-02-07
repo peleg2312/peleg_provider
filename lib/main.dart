@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
-import 'package:flutter_complete_guide/screens/first_screen.dart';
-import 'package:flutter_complete_guide/screens/login_screen.dart';
-import 'package:flutter_complete_guide/screens/task_list/task_main.dart';
-
+import 'package:flutter_complete_guide/screens/Auth/login_screen.dart';
+import 'package:flutter_complete_guide/screens/main_app_page.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/register.dart';
+import 'screens/Auth/register.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,14 +37,15 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: StreamBuilder(
-                    stream: FirebaseAuth.instance.authStateChanges(),
-                    builder: (ctx, userSnapshot) {
-                      if (userSnapshot.hasData) {
-                        return FirstScreen();
-                      }
-                      return AuthScreen();
-                    }),
+                home: MainScreen(),
+                // home: StreamBuilder(
+                //    stream: FirebaseAuth.instance.authStateChanges(),
+                //    builder: (ctx, userSnapshot) {
+                //      if (userSnapshot.hasData) {
+                //        return TaskApp();
+                //      }
+                //      return AuthScreen();
+                //    }),
               );
             }));
   }
