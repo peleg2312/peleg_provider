@@ -16,7 +16,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   final List<Widget> _children = [
     TournamentPage(),
