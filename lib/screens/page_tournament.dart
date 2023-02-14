@@ -11,6 +11,7 @@ import 'package:flutter_complete_guide/screens/page_done.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../model/tournament.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class TournamentPage extends StatefulWidget {
   final auth = FirebaseAuth.instance;
@@ -25,12 +26,29 @@ class TournamentPage extends StatefulWidget {
 class _TournamentPageState extends State<TournamentPage>
     with SingleTickerProviderStateMixin {
   int index = 1;
-
   @override
   Widget build(BuildContext context) {
-    List<Tournament> tournaments =
-        Provider.of<TournamentProvider>(context, listen: false).Tournaments;
+    List<Tournament>? tournaments =
+        Provider.of<TournamentProvider>(context).Tournaments;
+    tournaments
+        .add(Tournament(name: "Football", isDone: false, Admin: "12345"));
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: FloatingActionButton.extended(
+            backgroundColor: Colors.deepPurple,
+            onPressed: _addTaskPressed,
+            label: Text(
+              "Add Tournament",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            splashColor: Color.fromARGB(255, 88, 198, 206),
+          ),
+        ),
+      ),
       backgroundColor: Color(0xFFEEEFF5),
       body: ListView(
         children: <Widget>[
@@ -77,37 +95,6 @@ class _TournamentPageState extends State<TournamentPage>
                   ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 60.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    new Column(
-                      children: <Widget>[
-                        new Container(
-                          width: 50.0,
-                          height: 50.0,
-                          decoration: new BoxDecoration(
-                              color: Color.fromARGB(255, 244, 244, 244),
-                              border: new Border.all(color: Colors.black38),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(7.0))),
-                          child: new IconButton(
-                            icon: new Icon(Icons.add),
-                            onPressed: _addTaskPressed,
-                            iconSize: 30.0,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.0),
-                          child: Text('Add Tournament',
-                              style: TextStyle(color: Colors.black45)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
           Padding(
@@ -115,26 +102,37 @@ class _TournamentPageState extends State<TournamentPage>
             child: Container(
                 height: 360.0,
                 padding: EdgeInsets.only(bottom: 25.0),
-                child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200),
+                child: ListView.builder(
                     itemCount: tournaments.length,
-                    itemBuilder: (BuildContext ctx, index) {
+                    itemBuilder: (context, index) {
                       return Container(
-                        padding: EdgeInsets.all(5),
-                        alignment: Alignment.center,
                         decoration: BoxDecoration(
-                            color: Color(int.parse(tournaments[index].color)),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Column(children: [
-                          Text(tournaments[index].name),
-                          SizedBox(
-                            width: 10,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Card(
+                          child: ListTile(
+                            title: Text(tournaments[index].name),
+                            trailing: Icon(FontAwesomeIcons.basketball),
                           ),
-                        ]),
+                        ),
                       );
                     })
+                // ListView.builder(
+                //     itemCount: tournaments.length,
+                //     itemBuilder: (BuildContext ctx, index) {
+                //       return Container(
+                //         padding: EdgeInsets.all(5),
+                //         alignment: Alignment.center,
+                //         decoration: BoxDecoration(
+                //             color: Colors.lightBlue,
+                //             borderRadius: BorderRadius.circular(15)),
+                //         child: Column(children: [
+                //           Text(
+                //             tournaments[index].name,
+                //             textAlign: TextAlign.start,
+                //           ),
+                //         ]),
+                //       );
+                //     })
                 // child: NotificationListener<OverscrollIndicatorNotification>(
                 //   onNotification: (overscroll) {
                 //     overscroll.disallowGlow();

@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => TournamentProvider()),
         ],
         child: FutureBuilder(
-            // Initialize FlutterFire:
             future: _initialization,
             builder: (context, appSnapshot) {
               return MaterialApp(

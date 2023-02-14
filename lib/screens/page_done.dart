@@ -44,12 +44,12 @@ class _DonePageState extends State<DonePage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              'Task',
+                              'Score',
                               style: new TextStyle(
                                   fontSize: 30.0, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              'Done',
+                              'Board',
                               style: new TextStyle(
                                   fontSize: 28.0, color: Colors.grey),
                             )

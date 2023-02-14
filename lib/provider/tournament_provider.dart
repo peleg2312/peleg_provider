@@ -7,7 +7,7 @@ import 'package:flutter_complete_guide/model/tournament.dart';
 class TournamentProvider extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   bool saving = false;
-  late final List<Tournament> tournaments;
+  final List<Tournament> tournaments = <Tournament>[];
 
   List<Tournament> get Tournaments {
     return [...tournaments];
@@ -44,7 +44,6 @@ class TournamentProvider extends ChangeNotifier {
 
       tournaments.add(Tournament(
           name: listNameController.text.toString(),
-          color: currentColor.value.toString(),
           isDone: IsDone,
           Admin: authResult.uid));
 

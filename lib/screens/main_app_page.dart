@@ -22,6 +22,8 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
+          unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.shifting,
           backgroundColor: Color.fromARGB(255, 245, 245, 245),
           onTap: onTabTapped,
           currentIndex: _currentIndex,
