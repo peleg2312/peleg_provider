@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_complete_guide/screens/page_done.dart';
+import 'package:flutter_complete_guide/provider/tournament_provider.dart';
+import 'package:flutter_complete_guide/screens/score_board.dart';
 import 'package:flutter_complete_guide/screens/page_tournament.dart';
-import 'package:flutter_complete_guide/screens/task_list/page_taskByTime.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -16,76 +18,89 @@ class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 1;
 
-  final List<Widget> _children = [DonePage(), TournamentPage()];
+  final List<Widget> _children = [
+    TournamentPage(),
+    ScoreBoard(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.shifting,
-          backgroundColor: Color.fromARGB(255, 245, 245, 245),
-          onTap: onTabTapped,
-          currentIndex: _currentIndex,
-          fixedColor: Colors.deepPurple,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: new Icon(FontAwesomeIcons.unsorted), label: ""),
-            BottomNavigationBarItem(
-                icon: new Icon(FontAwesomeIcons.calendar), label: ""),
-          ],
+        bottomNavigationBar: Container(
+          color: Color.fromARGB(255, 36, 40, 51),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            child: GNav(
+                activeColor: Colors.deepPurple,
+                color: Colors.white70,
+                backgroundColor: Color.fromARGB(255, 36, 40, 51),
+                tabBackgroundColor: Colors.grey.shade500,
+                gap: 3,
+                padding: EdgeInsets.all(14),
+                onTabChange: onTabTapped,
+                tabs: const [
+                  GButton(
+                    icon: Icons.home,
+                    text: "home",
+                  ),
+                  GButton(icon: Icons.scoreboard, text: "Board"),
+                  GButton(
+                    icon: Icons.search,
+                    text: "Search",
+                  ),
+                  GButton(
+                    icon: Icons.favorite_border,
+                    text: "Likes",
+                  )
+                ]),
+          ),
         ),
         appBar: AppBar(
-          backgroundColor: Color(0xFFEEEFF5),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
           title: Row(
             children: [
-              Icon(
-                Icons.menu,
-                color: Colors.black87,
-              ),
-              Container(
-                width: 20,
-              ),
               Text(
-                'App',
+                'TournamentApp',
                 style: TextStyle(color: Colors.black87),
               ),
             ],
           ),
           actions: [
-            DropdownButton(
-              underline: Container(),
-              icon: Icon(
-                Icons.more_vert,
-                color: Colors.black87,
-              ),
-              items: [
-                DropdownMenuItem(
-                  child: Container(
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.exit_to_app,
-                          color: Colors.black87,
-                        ),
-                        SizedBox(width: 8),
-                        Text('Logout'),
-                      ],
-                    ),
-                  ),
-                  value: 'logout',
-                ),
-              ],
-              onChanged: (itemIdentifier) {
-                if (itemIdentifier == 'logout') {
-                  FirebaseAuth.instance.signOut();
-                }
-              },
-            ),
+            IconButton(
+                onPressed: LogOut,
+                icon: Icon(
+                  Icons.exit_to_app,
+                  size: 26,
+                  color: Colors.red,
+                ))
           ],
         ),
         body: _children[_currentIndex]);
+  }
+
+  void LogOut() {
+    showDialog(
+        context: context,
+        builder: ((ctx) => AlertDialog(
+              title: Text('Are you sure?'),
+              content: Text('Do you want to sign out?'),
+              actions: [
+                TextButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(ctx).pop(true);
+                  },
+                ),
+                TextButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(ctx).pop();
+                  },
+                )
+              ],
+            )));
   }
 
   @override
@@ -96,6 +111,17 @@ class _MainScreenState extends State<MainScreen>
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    try {
+      Provider.of<TournamentProvider>(context, listen: false)
+          .fetchTournamentData();
+    } catch (e) {
+      print(e);
+    }
   }
 
   void onTabTapped(int index) {

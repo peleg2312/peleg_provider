@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,11 +15,22 @@ class TournamentProvider extends ChangeNotifier {
     return [...tournaments];
   }
 
-  void addTournamentToFirebase(
-      Color currentColor,
-      TextEditingController listNameController,
-      bool IsDone,
-      BuildContext context) async {
+  Future<void> fetchTournamentData() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection("tournaments").get();
+      snapshot.docs.forEach((element) {
+        tournaments
+            .add(snapshot.docs.map((e) => Tournament.fromSnapshot(e)).single);
+      });
+    } catch (error) {
+      throw error;
+    }
+    notifyListeners();
+  }
+
+  void addTournamentToFirebase(TextEditingController listNameController,
+      bool IsDone, BuildContext context) async {
     User? authResult = _auth.currentUser;
     saving = true;
     bool isExist = false;
@@ -37,7 +50,6 @@ class TournamentProvider extends ChangeNotifier {
           .doc(listNameController.text.toString())
           .set({
         "IsDone": IsDone,
-        "color": currentColor.value.toString(),
         "admin": authResult.uid,
         "date": DateTime.now().millisecondsSinceEpoch
       });
@@ -47,21 +59,20 @@ class TournamentProvider extends ChangeNotifier {
           isDone: IsDone,
           Admin: authResult.uid));
 
-      listNameController.clear();
-
-      //pickerColor = Color(0xff6633ff);
-      currentColor = Color(0xfffffff);
-
       Navigator.of(context).pop();
     }
     if (isExist == true) {
-      showInSnackBar("This list already exists", context, currentColor);
+      showInSnackBar("This list already exists", context,
+          Theme.of(context).scaffoldBackgroundColor);
       saving = false;
     }
     if (listNameController.text.isEmpty) {
-      showInSnackBar("Please enter a name", context, currentColor);
+      showInSnackBar("Please enter a name", context,
+          Theme.of(context).scaffoldBackgroundColor);
       saving = false;
     }
+    listNameController.clear();
+    notifyListeners();
   }
 
   void showInSnackBar(String value, BuildContext context, Color color) {

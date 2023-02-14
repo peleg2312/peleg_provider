@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 title: 'FlutterChat',
                 theme: ThemeData(
+                  scaffoldBackgroundColor: Color.fromARGB(255, 67, 75, 95),
                   buttonTheme: ButtonTheme.of(context).copyWith(
                     textTheme: ButtonTextTheme.primary,
                     shape: RoundedRectangleBorder(
@@ -38,15 +39,15 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: MainScreen(),
-                // home: StreamBuilder(
-                //    stream: FirebaseAuth.instance.authStateChanges(),
-                //    builder: (ctx, userSnapshot) {
-                //      if (userSnapshot.hasData) {
-                //        return TaskApp();
-                //      }
-                //      return AuthScreen();
-                //    }),
+                debugShowCheckedModeBanner: false,
+                home: StreamBuilder(
+                    stream: FirebaseAuth.instance.authStateChanges(),
+                    builder: (ctx, userSnapshot) {
+                      if (userSnapshot.hasData) {
+                        return MainScreen();
+                      }
+                      return AuthScreen();
+                    }),
               );
             }));
   }

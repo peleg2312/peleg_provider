@@ -26,17 +26,22 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
   TextEditingController listNameController = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  Color pickerColor = Color.fromARGB(255, 51, 248, 255);
-  Color currentColor = Color(0xff6633ff);
-
+  late Icon IconPicker;
   late ValueChanged<Color> onColorChanged;
   bool IsDone = false;
   bool _saving = false;
+  int selectedCard = -1;
+  List<Icon> Iname = [
+    Icon(Icons.sports_basketball),
+    Icon(Icons.sports_baseball),
+    Icon(Icons.sports_volleyball),
+    Icon(Icons.sports_football),
+    Icon(Icons.sports_soccer)
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEEEFF5),
       key: _scaffoldKey,
       body: ModalProgressHUD(
           child: new Stack(
@@ -54,7 +59,7 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                           Expanded(
                             flex: 1,
                             child: Container(
-                              color: Colors.grey,
+                              color: Colors.white,
                               height: 1.5,
                             ),
                           ),
@@ -67,19 +72,20 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                                     'New',
                                     style: new TextStyle(
                                         fontSize: 30.0,
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey),
                                   ),
                                   Text(
                                     'Tournament',
                                     style: new TextStyle(
-                                        fontSize: 28.0, color: Colors.grey),
+                                        fontSize: 28.0, color: Colors.white70),
                                   )
                                 ],
                               )),
                           Expanded(
                             flex: 1,
                             child: Container(
-                              color: Colors.grey,
+                              color: Colors.white,
                               height: 1.5,
                             ),
                           ),
@@ -114,54 +120,40 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                             textCapitalization: TextCapitalization.sentences,
                             maxLength: 20,
                           ),
-                          new Padding(
-                            padding: EdgeInsets.only(bottom: 10.0),
-                          ),
-                          ButtonTheme(
-                            minWidth: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                pickerColor = currentColor;
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Pick a color!'),
-                                      content: SingleChildScrollView(
-                                        child: ColorPicker(
-                                          pickerColor: pickerColor,
-                                          onColorChanged: changeColor,
-                                          showLabel: true,
-                                          colorPickerWidth: 1000.0,
-                                          pickerAreaHeightPercent: 0.7,
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: Text('Got it'),
-                                          onPressed: () {
-                                            setState(() =>
-                                                currentColor = pickerColor);
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: Text('color'),
-                              style: ElevatedButton.styleFrom(
-                                  elevation: 3,
-                                  primary: currentColor,
-                                  foregroundColor: const Color(0xffffffff)),
-                            ),
-                          ),
                         ],
                       ),
                     ),
+                    Expanded(
+                      child: GridView.builder(
+                          shrinkWrap: false,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3),
+                          itemCount: Iname.length,
+                          itemBuilder: (BuildContext ctx, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(80)),
+                                color: selectedCard == index
+                                    ? Color.fromARGB(255, 58, 108, 183)
+                                    : Colors.deepPurple,
+                                child: IconButton(
+                                    iconSize: 50,
+                                    alignment: Alignment.center,
+                                    icon: Iname[index],
+                                    color: Color.fromARGB(255, 164, 164, 164),
+                                    onPressed: (() {
+                                      setState(() => IconPicker = Iname[index]);
+                                      selectedCard = index;
+                                    })),
+                              ),
+                            );
+                          }),
+                    ),
                     Padding(
-                      padding: EdgeInsets.only(top: 50.0),
+                      padding: EdgeInsets.only(top: 20.0),
                       child: new Column(
                         children: <Widget>[
                           new ElevatedButton(
@@ -176,7 +168,7 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                             onPressed: () {
                               Provider.of<TournamentProvider>(context,
                                       listen: false)
-                                  .addTournamentToFirebase(currentColor,
+                                  .addTournamentToFirebase(
                                       listNameController, IsDone, context);
                             },
                           ),
@@ -192,8 +184,8 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
     );
   }
 
-  changeColor(Color color) {
-    setState(() => pickerColor = color);
+  ChangeIconPicker(Icon icon) {
+    setState(() => IconPicker = icon);
   }
 
   @override
