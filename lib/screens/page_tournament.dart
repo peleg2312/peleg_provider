@@ -3,11 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/model/element.dart';
+import 'package:flutter_complete_guide/model/tournament.dart';
+import 'package:flutter_complete_guide/provider/tournament_provider.dart';
+import 'package:flutter_complete_guide/screens/page_addtourna.dart';
 import 'package:flutter_complete_guide/screens/task_list/page_detail.dart';
 import 'package:flutter_complete_guide/screens/page_done.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'task_list/page_addlist.dart';
+import 'package:provider/provider.dart';
+import '../model/tournament.dart';
 
 class TournamentPage extends StatefulWidget {
   final auth = FirebaseAuth.instance;
@@ -25,6 +28,8 @@ class _TournamentPageState extends State<TournamentPage>
 
   @override
   Widget build(BuildContext context) {
+    List<Tournament> tournaments =
+        Provider.of<TournamentProvider>(context, listen: false).Tournaments;
     return Scaffold(
       backgroundColor: Color(0xFFEEEFF5),
       body: ListView(
@@ -108,43 +113,63 @@ class _TournamentPageState extends State<TournamentPage>
           Padding(
             padding: EdgeInsets.only(top: 70.0),
             child: Container(
-              height: 360.0,
-              padding: EdgeInsets.only(bottom: 25.0),
-              child: NotificationListener<OverscrollIndicatorNotification>(
-                onNotification: (overscroll) {
-                  overscroll.disallowGlow();
-                  return true;
-                },
-                child: new StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection(widget.auth.currentUser!.uid)
-                        .doc("TaskList")
-                        .collection("Tasks")
-                        .orderBy("date", descending: true)
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData)
-                        return new Center(
-                            child: CircularProgressIndicator(
-                          backgroundColor: Colors.blue,
-                        ));
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: new ListView(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              padding: EdgeInsets.only(left: 40.0, right: 40.0),
-                              scrollDirection: Axis.horizontal,
-                              children: getExpenseItems(snapshot),
-                            ),
+                height: 360.0,
+                padding: EdgeInsets.only(bottom: 25.0),
+                child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200),
+                    itemCount: tournaments.length,
+                    itemBuilder: (BuildContext ctx, index) {
+                      return Container(
+                        padding: EdgeInsets.all(5),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Color(int.parse(tournaments[index].color)),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Column(children: [
+                          Text(tournaments[index].name),
+                          SizedBox(
+                            width: 10,
                           ),
-                        ],
+                        ]),
                       );
-                    }),
-              ),
-            ),
+                    })
+                // child: NotificationListener<OverscrollIndicatorNotification>(
+                //   onNotification: (overscroll) {
+                //     overscroll.disallowGlow();
+                //     return true;
+                //   },
+                // child: new StreamBuilder<QuerySnapshot>(
+                //     stream: FirebaseFirestore.instance
+                //         .collection(widget.auth.currentUser!.uid)
+                //         .doc("TaskList")
+                //         .collection("Tasks")
+                //         .orderBy("date", descending: true)
+                //         .snapshots(),
+                //     builder: (BuildContext context,
+                //         AsyncSnapshot<QuerySnapshot> snapshot) {
+                //       if (!snapshot.hasData)
+                //         return new Center(
+                //             child: CircularProgressIndicator(
+                //           backgroundColor: Colors.blue,
+                //         ));
+                //       return Column(
+                //         children: [
+                //           Expanded(
+                //             child: new ListView(
+                //               shrinkWrap: true,
+                //               physics: const BouncingScrollPhysics(),
+                //               padding: EdgeInsets.only(left: 40.0, right: 40.0),
+                //               scrollDirection: Axis.horizontal,
+                //               children: getExpenseItems(snapshot),
+                //             ),
+                //           ),
+                //         ],
+                //       );
+                //     }),
+                // ),
+                ),
           ),
         ],
       ),
@@ -362,7 +387,7 @@ class _TournamentPageState extends State<TournamentPage>
   void _addTaskPressed() async {
     Navigator.of(context).push(
       new PageRouteBuilder(
-        pageBuilder: (_, __, ___) => new NewTaskListPage(
+        pageBuilder: (_, __, ___) => new NewTournamentPage(
             //user: widget.user,
             ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>

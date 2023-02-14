@@ -8,19 +8,20 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
-class NewTaskListPage extends StatefulWidget {
-  NewTaskListPage({
+class NewTournamentPage extends StatefulWidget {
+  NewTournamentPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _NewTaskListPageState();
+  State<StatefulWidget> createState() => _NewTournamentPageState();
 }
 
-class _NewTaskListPageState extends State<NewTaskListPage> {
+class _NewTournamentPageState extends State<NewTournamentPage> {
   @override
   TextEditingController listNameController = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -29,7 +30,7 @@ class _NewTaskListPageState extends State<NewTaskListPage> {
   Color currentColor = Color(0xff6633ff);
 
   late ValueChanged<Color> onColorChanged;
-
+  bool IsDone = false;
   bool _saving = false;
 
   @override
@@ -58,7 +59,7 @@ class _NewTaskListPageState extends State<NewTaskListPage> {
                             ),
                           ),
                           Expanded(
-                              flex: 2,
+                              flex: 4,
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -69,7 +70,7 @@ class _NewTaskListPageState extends State<NewTaskListPage> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    'List',
+                                    'Tournament',
                                     style: new TextStyle(
                                         fontSize: 28.0, color: Colors.grey),
                                   )
@@ -96,7 +97,7 @@ class _NewTaskListPageState extends State<NewTaskListPage> {
                                     borderSide: new BorderSide(
                                         color:
                                             Color.fromARGB(255, 17, 106, 97))),
-                                labelText: "List name",
+                                labelText: "Tournament name",
                                 contentPadding: EdgeInsets.only(
                                     left: 16.0,
                                     top: 20.0,
@@ -149,7 +150,7 @@ class _NewTaskListPageState extends State<NewTaskListPage> {
                                   },
                                 );
                               },
-                              child: Text('Card color'),
+                              child: Text('color'),
                               style: ElevatedButton.styleFrom(
                                   elevation: 3,
                                   primary: currentColor,
@@ -173,9 +174,10 @@ class _NewTaskListPageState extends State<NewTaskListPage> {
                                 elevation: 4.0,
                                 backgroundColor: Colors.deepPurple),
                             onPressed: () {
-                              Provider.of<AuthProvider>(context, listen: false)
-                                  .addListToFirebase(currentColor,
-                                      listNameController, context);
+                              Provider.of<TournamentProvider>(context,
+                                      listen: false)
+                                  .addTournamentToFirebase(currentColor,
+                                      listNameController, IsDone, context);
                             },
                           ),
                         ],
