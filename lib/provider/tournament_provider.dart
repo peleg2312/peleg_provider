@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,12 +15,19 @@ class TournamentProvider extends ChangeNotifier {
 
   Future<void> fetchTournamentData() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection("tournaments").get();
-      snapshot.docs.forEach((element) {
-        tournaments
-            .add(snapshot.docs.map((e) => Tournament.fromSnapshot(e)).single);
-      });
+      await FirebaseFirestore.instance.collection('tournaments').get().then(
+        (QuerySnapshot value) {
+          value.docs.forEach(
+            (result) {
+              tournaments.add(Tournament(
+                  name: result.id,
+                  isDone: result["IsDone"],
+                  Admin: result["admin"],
+                  icon: result["icon"]));
+            },
+          );
+        },
+      );
     } catch (error) {
       throw error;
     }
@@ -30,7 +35,7 @@ class TournamentProvider extends ChangeNotifier {
   }
 
   void addTournamentToFirebase(TextEditingController listNameController,
-      bool IsDone, BuildContext context) async {
+      bool IsDone, BuildContext context, int iconSelected) async {
     User? authResult = _auth.currentUser;
     saving = true;
     bool isExist = false;
@@ -51,13 +56,15 @@ class TournamentProvider extends ChangeNotifier {
           .set({
         "IsDone": IsDone,
         "admin": authResult.uid,
-        "date": DateTime.now().millisecondsSinceEpoch
+        "date": DateTime.now().millisecondsSinceEpoch,
+        "icon": iconSelected
       });
 
       tournaments.add(Tournament(
           name: listNameController.text.toString(),
           isDone: IsDone,
-          Admin: authResult.uid));
+          Admin: authResult.uid,
+          icon: iconSelected));
 
       Navigator.of(context).pop();
     }

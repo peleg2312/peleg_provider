@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_complete_guide/components/IconList.dart';
 import 'package:flutter_complete_guide/model/element.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
@@ -25,14 +26,11 @@ class TournamentPage extends StatefulWidget {
 class _TournamentPageState extends State<TournamentPage>
     with SingleTickerProviderStateMixin {
   int index = 1;
+
   @override
   Widget build(BuildContext context) {
     List<Tournament>? tournaments =
         Provider.of<TournamentProvider>(context).Tournaments;
-    tournaments
-        .add(Tournament(name: "FootBall", isDone: false, Admin: "12345"));
-    tournaments
-        .add(Tournament(name: "VolleyBall", isDone: false, Admin: "12345"));
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Align(
@@ -117,10 +115,7 @@ class _TournamentPageState extends State<TournamentPage>
                             height: 70,
                             child: Center(
                               child: ListTile(
-                                leading: Icon(
-                                  FontAwesomeIcons.football,
-                                  size: 40,
-                                ),
+                                leading: IconsList[index],
                                 title: Text(
                                   tournaments[index].name,
                                   style: TextStyle(

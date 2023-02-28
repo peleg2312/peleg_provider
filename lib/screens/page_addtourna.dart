@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_complete_guide/components/IconList.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
 
 import 'package:connectivity/connectivity.dart';
@@ -26,18 +27,11 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
   TextEditingController listNameController = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  late Icon IconPicker;
+  late int IconPicker;
   late ValueChanged<Color> onColorChanged;
   bool IsDone = false;
   bool _saving = false;
   int selectedCard = -1;
-  List<Icon> Iname = [
-    Icon(Icons.sports_basketball),
-    Icon(Icons.sports_baseball),
-    Icon(Icons.sports_volleyball),
-    Icon(Icons.sports_football),
-    Icon(Icons.sports_soccer)
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +123,7 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3),
-                          itemCount: Iname.length,
+                          itemCount: IconsList.length,
                           itemBuilder: (BuildContext ctx, index) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -142,10 +136,10 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                                 child: IconButton(
                                     iconSize: 50,
                                     alignment: Alignment.center,
-                                    icon: Iname[index],
+                                    icon: IconsList[index]!,
                                     color: Color.fromARGB(255, 164, 164, 164),
                                     onPressed: (() {
-                                      setState(() => IconPicker = Iname[index]);
+                                      setState(() => IconPicker = index);
                                       selectedCard = index;
                                     })),
                               ),
@@ -168,8 +162,8 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                             onPressed: () {
                               Provider.of<TournamentProvider>(context,
                                       listen: false)
-                                  .addTournamentToFirebase(
-                                      listNameController, IsDone, context);
+                                  .addTournamentToFirebase(listNameController,
+                                      IsDone, context, IconPicker);
                             },
                           ),
                         ],
@@ -182,10 +176,6 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
           ),
           inAsyncCall: _saving),
     );
-  }
-
-  ChangeIconPicker(Icon icon) {
-    setState(() => IconPicker = icon);
   }
 
   @override
