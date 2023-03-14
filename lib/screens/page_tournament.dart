@@ -8,6 +8,7 @@ import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/page_addtourna.dart';
 import 'package:flutter_complete_guide/screens/score_board.dart';
+import 'package:flutter_complete_guide/screens/tournament_detail.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../model/tournament.dart';
@@ -105,29 +106,32 @@ class _TournamentPageState extends State<TournamentPage>
                 child: ListView.builder(
                     itemCount: tournaments.length,
                     itemBuilder: (context, index) {
-                      return Stack(children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color.fromRGBO(87, 95, 113, 1)),
-                            height: 70,
-                            child: Center(
-                              child: ListTile(
-                                leading: IconsList[index],
-                                title: Text(
-                                  tournaments[index].name,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 20),
+                      return GestureDetector(
+                        child: Stack(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color.fromRGBO(87, 95, 113, 1)),
+                              height: 70,
+                              child: Center(
+                                child: ListTile(
+                                  leading: IconsList[index],
+                                  title: Text(
+                                    tournaments[index].name,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 20),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ]);
+                        ]),
+                        onTap: () => _DetailPressed(tournaments[index]),
+                      );
                     })),
           ),
         ],
@@ -156,6 +160,49 @@ class _TournamentPageState extends State<TournamentPage>
         pageBuilder: (_, __, ___) => new NewTournamentPage(
             //user: widget.user,
             ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            new ScaleTransition(
+          scale: new Tween<double>(
+            begin: 1.5,
+            end: 1.0,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Interval(
+                0.50,
+                1.00,
+                curve: Curves.linear,
+              ),
+            ),
+          ),
+          child: ScaleTransition(
+            scale: Tween<double>(
+              begin: 0.0,
+              end: 1.0,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Interval(
+                  0.00,
+                  0.50,
+                  curve: Curves.linear,
+                ),
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+    //Navigator.of(context).pushNamed('/new');
+  }
+
+  void _DetailPressed(Tournament tournament) async {
+    Navigator.of(context).push(
+      new PageRouteBuilder(
+        pageBuilder: (_, __, ___) => new DetailPage(
+          tournament: tournament,
+        ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             new ScaleTransition(
           scale: new Tween<double>(
