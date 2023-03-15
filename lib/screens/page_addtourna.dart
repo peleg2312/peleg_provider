@@ -104,7 +104,7 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                                     right: 16.0,
                                     bottom: 5.0)),
                             controller: listNameController,
-                            autofocus: true,
+                            autofocus: false,
                             style: TextStyle(
                               fontSize: 22.0,
                               color: Colors.black,

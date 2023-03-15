@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
+import 'package:flutter_complete_guide/screens/likes_tournament.dart';
 import 'package:flutter_complete_guide/screens/score_board.dart';
 import 'package:flutter_complete_guide/screens/page_tournament.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,6 +22,7 @@ class _MainScreenState extends State<MainScreen>
   final List<Widget> _children = [
     TournamentPage(),
     ScoreBoard(),
+    LikedTournament(),
   ];
 
   @override
@@ -44,10 +46,6 @@ class _MainScreenState extends State<MainScreen>
                     text: "home",
                   ),
                   GButton(icon: Icons.scoreboard, text: "Board"),
-                  GButton(
-                    icon: Icons.search,
-                    text: "Search",
-                  ),
                   GButton(
                     icon: Icons.favorite_border,
                     text: "Likes",

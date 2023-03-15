@@ -47,12 +47,14 @@ class _ScoreBoardState extends State<ScoreBoard>
                             Text(
                               'Score',
                               style: new TextStyle(
-                                  fontSize: 30.0, fontWeight: FontWeight.bold),
+                                  fontSize: 30.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey),
                             ),
                             Text(
                               'Board',
                               style: new TextStyle(
-                                  fontSize: 28.0, color: Colors.grey),
+                                  fontSize: 28.0, color: Colors.white70),
                             )
                           ],
                         )),

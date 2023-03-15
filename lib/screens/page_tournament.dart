@@ -27,6 +27,7 @@ class TournamentPage extends StatefulWidget {
 class _TournamentPageState extends State<TournamentPage>
     with SingleTickerProviderStateMixin {
   int index = 1;
+  bool liked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +125,20 @@ class _TournamentPageState extends State<TournamentPage>
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
                                         fontSize: 20),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: liked == false
+                                        ? Icon(Icons.favorite_border)
+                                        : Icon(
+                                            Icons.favorite,
+                                            color: Colors.deepPurple,
+                                            shadows: [Shadow(blurRadius: 7)],
+                                          ),
+                                    onPressed: () {
+                                      setState(() {
+                                        liked = !liked;
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
