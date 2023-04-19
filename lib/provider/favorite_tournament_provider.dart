@@ -50,6 +50,7 @@ class FavoriteTournamentProvider extends ChangeNotifier {
     });
 
     if (isExist == false) {
+      tournament.SetFavorite(true);
       await FirebaseFirestore.instance
           .collection("userFavorite")
           .doc(authResult!.uid)
@@ -60,17 +61,18 @@ class FavoriteTournamentProvider extends ChangeNotifier {
           .collection("userFavorite")
           .doc(authResult!.uid)
           .set({"userName": authResult?.displayName});
-      tournament.SetFavorite(true);
       favoriteTournaments.add(tournament.Id);
     } else {
+      tournament.SetFavorite(false);
       await FirebaseFirestore.instance
           .collection("userFavorite")
           .doc(authResult!.uid)
           .collection("tournament")
           .doc(tournament.Id)
           .delete();
-      tournament.SetFavorite(false);
       favoriteTournaments.remove(tournament.Id);
     }
+
+    notifyListeners();
   }
 }

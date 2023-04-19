@@ -32,6 +32,7 @@ class _EditTournamentState extends State<EditTournament> {
   bool IsDone = false;
   bool _saving = false;
   int selectedCard = -1;
+  bool isStarted = false;
 
   @override
   void initState() {
@@ -175,7 +176,8 @@ class _EditTournamentState extends State<EditTournament> {
                                       IsDone,
                                       context,
                                       IconPicker,
-                                      widget.tournament);
+                                      widget.tournament,
+                                      isStarted);
                             },
                           ),
                         ],

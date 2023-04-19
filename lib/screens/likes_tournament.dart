@@ -99,6 +99,12 @@ class _LikedTournamentState extends State<LikedTournament> {
                                 height: 70,
                                 child: Center(
                                   child: ListTile(
+                                    key: new Key(index.toString()),
+                                    subtitle:
+                                        likedTournament![index].isStarted ==
+                                                false
+                                            ? Text("in registration")
+                                            : Text("in progress"),
                                     leading:
                                         IconsList[likedTournament[index].icon],
                                     title: Text(

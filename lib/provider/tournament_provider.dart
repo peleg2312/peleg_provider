@@ -28,7 +28,8 @@ class TournamentProvider extends ChangeNotifier {
                   isDone: result["IsDone"],
                   Admin: result["admin"],
                   icon: result["icon"],
-                  Id: result.id);
+                  Id: result.id,
+                  isStarted: result["isStarted"]);
 
               tournaments.add(newT);
             },
@@ -64,7 +65,8 @@ class TournamentProvider extends ChangeNotifier {
         "IsDone": IsDone,
         "admin": authResult?.uid,
         "date": DateTime.now().millisecondsSinceEpoch,
-        "icon": iconSelected
+        "icon": iconSelected,
+        "isStarted": false
       }).then((value) => Id = value.id);
 
       tournaments.add(Tournament(
@@ -72,7 +74,8 @@ class TournamentProvider extends ChangeNotifier {
           isDone: IsDone,
           Admin: authResult!.uid,
           icon: iconSelected,
-          Id: Id));
+          Id: Id,
+          isStarted: false));
 
       Navigator.of(context).pop();
     }
@@ -95,7 +98,8 @@ class TournamentProvider extends ChangeNotifier {
       bool IsDone,
       BuildContext context,
       int iconSelected,
-      Tournament tournament) async {
+      Tournament tournament,
+      bool isStarted) async {
     User? authResult = _auth.currentUser;
     saving = true;
     bool isExist = false;
@@ -109,7 +113,8 @@ class TournamentProvider extends ChangeNotifier {
       "IsDone": IsDone,
       "admin": tournament.Admin,
       "date": DateTime.now().millisecondsSinceEpoch,
-      "icon": iconSelected
+      "icon": iconSelected,
+      "isStarted": isStarted
     });
 
     tournaments.removeWhere((element) => element == tournament);
@@ -119,7 +124,8 @@ class TournamentProvider extends ChangeNotifier {
         isDone: IsDone,
         Admin: authResult!.uid,
         icon: iconSelected,
-        Id: Id));
+        Id: Id,
+        isStarted: isStarted));
 
     FirebaseFirestore.instance
         .collection('userFavorite')

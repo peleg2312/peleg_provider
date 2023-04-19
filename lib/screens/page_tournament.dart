@@ -143,6 +143,11 @@ class _TournamentPageState extends State<TournamentPage>
                               height: 70,
                               child: Center(
                                 child: ListTile(
+                                  key: new Key(index.toString()),
+                                  subtitle:
+                                      tournaments![index].isStarted == false
+                                          ? Text("in registration")
+                                          : Text("in progress"),
                                   leading: IconsList[tournaments[index].icon],
                                   title: Text(
                                     tournaments[index].name,
@@ -166,8 +171,6 @@ class _TournamentPageState extends State<TournamentPage>
                                                 listen: false)
                                             .FavoriteTournament(
                                                 tournaments[index]);
-                                        tournaments[index].SetFavorite(
-                                            !tournaments[index].favorite);
                                       });
                                     },
                                   ),

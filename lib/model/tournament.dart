@@ -8,16 +8,22 @@ class Tournament {
   final int icon;
   bool favorite = false;
   final String Id;
+  bool isStarted;
 
   Tournament(
       {required this.name,
       required this.isDone,
       required this.Admin,
       required this.icon,
-      required this.Id});
+      required this.Id,
+      required this.isStarted});
 
   void SetFavorite(bool b) {
     favorite = b;
+  }
+
+  void ChangeIsStarted() {
+    isStarted = !isStarted;
   }
 
   void add(Tournament tournament) {}
