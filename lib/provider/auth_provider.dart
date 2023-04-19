@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -143,6 +144,17 @@ class AuthProvider extends ChangeNotifier {
       showInSnackBar("Please enter a name", context, Colors.grey);
       saving = false;
     }
+  }
+
+  void addFavorite() {
+    User? authResult = _auth.currentUser;
+    List<Tournament> favoriteTournaments = <Tournament>[];
+
+    FirebaseFirestore.instance.collection('users').doc(authResult?.uid).set({
+      'username': authResult?.displayName,
+      'email': authResult?.email,
+      'favorite': favoriteTournaments
+    });
   }
 
   void showInSnackBar(String value, BuildContext context, Color color) {

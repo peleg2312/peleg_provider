@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
+import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
+import 'package:provider/provider.dart';
 
 class TournamentProvider extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
@@ -13,17 +15,22 @@ class TournamentProvider extends ChangeNotifier {
     return [...tournaments];
   }
 
-  Future<void> fetchTournamentData() async {
+  Future<void> fetchTournamentData(context) async {
+    //List<Tournament> Ftournaments =
+    //    Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
     try {
       await FirebaseFirestore.instance.collection('tournaments').get().then(
         (QuerySnapshot value) {
           value.docs.forEach(
             (result) {
-              tournaments.add(Tournament(
-                  name: result.id,
+              Tournament newT = Tournament(
+                  name: result["name"],
                   isDone: result["IsDone"],
                   Admin: result["admin"],
-                  icon: result["icon"]));
+                  icon: result["icon"],
+                  Id: result.id);
+
+              tournaments.add(newT);
             },
           );
         },
@@ -31,6 +38,7 @@ class TournamentProvider extends ChangeNotifier {
     } catch (error) {
       throw error;
     }
+
     notifyListeners();
   }
 
@@ -41,7 +49,7 @@ class TournamentProvider extends ChangeNotifier {
     bool isExist = false;
 
     QuerySnapshot query =
-        await FirebaseFirestore.instance.collection(authResult!.uid).get();
+        await FirebaseFirestore.instance.collection("tournaments").get();
 
     query.docs.forEach((doc) {
       if (listNameController.text.toString() == doc.id) {
@@ -49,22 +57,22 @@ class TournamentProvider extends ChangeNotifier {
       }
     });
 
+    String Id = "";
     if (isExist == false && listNameController.text.isNotEmpty) {
-      await FirebaseFirestore.instance
-          .collection("tournaments")
-          .doc(listNameController.text.toString())
-          .set({
+      await FirebaseFirestore.instance.collection("tournaments").add({
+        "name": listNameController.text.toString(),
         "IsDone": IsDone,
-        "admin": authResult.uid,
+        "admin": authResult?.uid,
         "date": DateTime.now().millisecondsSinceEpoch,
         "icon": iconSelected
-      });
+      }).then((value) => Id = value.id);
 
       tournaments.add(Tournament(
           name: listNameController.text.toString(),
           isDone: IsDone,
-          Admin: authResult.uid,
-          icon: iconSelected));
+          Admin: authResult!.uid,
+          icon: iconSelected,
+          Id: Id));
 
       Navigator.of(context).pop();
     }
@@ -78,6 +86,104 @@ class TournamentProvider extends ChangeNotifier {
           Theme.of(context).scaffoldBackgroundColor);
       saving = false;
     }
+    listNameController.clear();
+    notifyListeners();
+  }
+
+  void updateTournamentToFirebase(
+      TextEditingController listNameController,
+      bool IsDone,
+      BuildContext context,
+      int iconSelected,
+      Tournament tournament) async {
+    User? authResult = _auth.currentUser;
+    saving = true;
+    bool isExist = false;
+    String Id = tournament.Id;
+
+    await FirebaseFirestore.instance
+        .collection("tournaments")
+        .doc(tournament.Id)
+        .set({
+      "name": listNameController.text.toString(),
+      "IsDone": IsDone,
+      "admin": tournament.Admin,
+      "date": DateTime.now().millisecondsSinceEpoch,
+      "icon": iconSelected
+    });
+
+    tournaments.removeWhere((element) => element == tournament);
+
+    tournaments.add(Tournament(
+        name: listNameController.text.toString(),
+        isDone: IsDone,
+        Admin: authResult!.uid,
+        icon: iconSelected,
+        Id: Id));
+
+    FirebaseFirestore.instance
+        .collection('userFavorite')
+        .get()
+        .then(((QuerySnapshot value) {
+      value.docs.forEach((element) {
+        FirebaseFirestore.instance
+            .collection('userFavorite')
+            .doc(element.id)
+            .collection('tournament')
+            .get()
+            .then((QuerySnapshot value) {
+          value.docs.forEach((result) {
+            if (result.id == tournament.Id) {
+              FirebaseFirestore.instance
+                  .collection("userFavorite")
+                  .doc(element.id)
+                  .collection("tournament")
+                  .doc(result.id)
+                  .set({
+                "name": listNameController.text.toString(),
+                "IsDone": IsDone,
+                "admin": tournament.Admin,
+                "date": DateTime.now().millisecondsSinceEpoch,
+                "icon": iconSelected
+              });
+            }
+          });
+        });
+      });
+    }));
+
+    FirebaseFirestore.instance
+        .collection('userFavorite')
+        .get()
+        .then(((QuerySnapshot value) {
+      value.docs.forEach((element) {
+        FirebaseFirestore.instance
+            .collection('userFavorite')
+            .doc(element.id)
+            .collection('tournament')
+            .get()
+            .then((QuerySnapshot value) {
+          value.docs.forEach((result) {
+            if (result.id == tournament.name) {
+              FirebaseFirestore.instance
+                  .collection("userFavorite")
+                  .doc(element.id)
+                  .collection("tournament")
+                  .doc(result.id)
+                  .set({
+                "IsDone": IsDone,
+                "admin": tournament.Admin,
+                "date": DateTime.now().millisecondsSinceEpoch,
+                "icon": iconSelected
+              });
+            }
+          });
+        });
+      });
+    }));
+
+    Navigator.of(context).pop();
+
     listNameController.clear();
     notifyListeners();
   }

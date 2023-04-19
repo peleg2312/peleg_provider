@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_complete_guide/components/IconList.dart';
+import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
 
 import 'package:connectivity/connectivity.dart';
@@ -13,25 +14,32 @@ import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
-class NewTournamentPage extends StatefulWidget {
-  NewTournamentPage({
-    Key? key,
-  }) : super(key: key);
+class EditTournament extends StatefulWidget {
+  final Tournament tournament;
+
+  EditTournament({Key? key, required this.tournament}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _NewTournamentPageState();
+  State<StatefulWidget> createState() => _EditTournamentState();
 }
 
-class _NewTournamentPageState extends State<NewTournamentPage> {
+class _EditTournamentState extends State<EditTournament> {
   @override
   TextEditingController listNameController = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   late int IconPicker;
   late ValueChanged<Color> onColorChanged;
   bool IsDone = false;
   bool _saving = false;
   int selectedCard = -1;
+
+  @override
+  void initState() {
+    listNameController.text = widget.tournament.name;
+    selectedCard = widget.tournament.icon;
+    IconPicker = widget.tournament.icon;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +71,7 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    'New',
+                                    'Edit',
                                     style: new TextStyle(
                                         fontSize: 30.0,
                                         fontWeight: FontWeight.bold,
@@ -117,17 +125,16 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      height: 150,
+                    Expanded(
                       child: GridView.builder(
                           shrinkWrap: false,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 5),
+                                  crossAxisCount: 3),
                           itemCount: IconsList.length,
                           itemBuilder: (BuildContext ctx, index) {
                             return Padding(
-                              padding: const EdgeInsets.all(0.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(80)),
@@ -135,7 +142,7 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                                     ? Color.fromARGB(255, 58, 108, 183)
                                     : Colors.deepPurple,
                                 child: IconButton(
-                                    iconSize: 30,
+                                    iconSize: 50,
                                     alignment: Alignment.center,
                                     icon: IconsList[index]!,
                                     color: Color.fromARGB(255, 164, 164, 164),
@@ -148,12 +155,12 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                           }),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 0.0),
+                      padding: EdgeInsets.only(top: 20.0),
                       child: new Column(
                         children: <Widget>[
                           new ElevatedButton(
                             child: const Text(
-                              'Add',
+                              'Save',
                               style: TextStyle(color: Colors.white),
                             ),
                             style: ElevatedButton.styleFrom(
@@ -163,8 +170,12 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                             onPressed: () {
                               Provider.of<TournamentProvider>(context,
                                       listen: false)
-                                  .addTournamentToFirebase(listNameController,
-                                      IsDone, context, IconPicker);
+                                  .updateTournamentToFirebase(
+                                      listNameController,
+                                      IsDone,
+                                      context,
+                                      IconPicker,
+                                      widget.tournament);
                             },
                           ),
                         ],

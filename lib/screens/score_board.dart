@@ -40,10 +40,13 @@ class _ScoreBoardState extends State<ScoreBoard>
                       ),
                     ),
                     Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: new Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
+                            SizedBox(
+                              width: 10,
+                            ),
                             Text(
                               'Score',
                               style: new TextStyle(
@@ -55,7 +58,10 @@ class _ScoreBoardState extends State<ScoreBoard>
                               'Board',
                               style: new TextStyle(
                                   fontSize: 28.0, color: Colors.white70),
-                            )
+                            ),
+                            IconButton(
+                                onPressed: restartScore,
+                                icon: Icon(FontAwesomeIcons.trashRestoreAlt))
                           ],
                         )),
                     Expanded(
@@ -69,30 +75,57 @@ class _ScoreBoardState extends State<ScoreBoard>
                 ),
               ),
               Padding(padding: EdgeInsets.only(top: 50.0)),
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.topCenter,
-                      child: Column(
-                        children: [
-                          Text("Team A",
-                              style: TextStyle(
-                                  fontSize: 40, fontWeight: FontWeight.w600)),
-                          Padding(padding: EdgeInsets.only(top: 15)),
-                          Text(TeamAScore.toString(),
-                              style: TextStyle(
-                                  fontSize: 40, fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(15)),
-                      height: 150,
+                  Container(
+                    alignment: Alignment.topCenter,
+                    child: Column(
+                      children: [
+                        Text("Team A",
+                            style: TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.w600)),
+                        Padding(padding: EdgeInsets.only(top: 40)),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                    onPressed: (() {
+                                      setState(() {
+                                        TeamAScore++;
+                                      });
+                                    }),
+                                    icon: Icon(FontAwesomeIcons.add))),
+                            Text(TeamAScore.toString(),
+                                style: TextStyle(
+                                    fontSize: 40, fontWeight: FontWeight.w600)),
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                    onPressed: (() {
+                                      setState(() {
+                                        if (TeamAScore > 0) TeamAScore--;
+                                      });
+                                    }),
+                                    icon: Icon(FontAwesomeIcons.minus))),
+                          ],
+                        ),
+                      ],
                     ),
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                    ),
+                    height: 220,
                   ),
-                  Expanded(
-                      child: Container(
+                  Container(
                     alignment: Alignment.topCenter,
                     child: Column(
                       children: [
@@ -101,57 +134,49 @@ class _ScoreBoardState extends State<ScoreBoard>
                           style: TextStyle(
                               fontSize: 40, fontWeight: FontWeight.w600),
                         ),
-                        Padding(padding: EdgeInsets.only(top: 15)),
-                        Text(
-                          TeamBScore.toString(),
-                          style: TextStyle(
-                              fontSize: 40, fontWeight: FontWeight.w600),
-                        )
+                        Padding(padding: EdgeInsets.only(top: 40)),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                    onPressed: (() {
+                                      setState(() {
+                                        TeamBScore++;
+                                      });
+                                    }),
+                                    icon: Icon(FontAwesomeIcons.add))),
+                            Text(TeamBScore.toString(),
+                                style: TextStyle(
+                                    fontSize: 40, fontWeight: FontWeight.w600)),
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                    onPressed: (() {
+                                      setState(() {
+                                        if (TeamBScore > 0) TeamBScore--;
+                                      });
+                                    }),
+                                    icon: Icon(FontAwesomeIcons.minus))),
+                          ],
+                        ),
                       ],
                     ),
                     decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(15)),
-                    height: 150,
-                  ))
-                ],
-              ),
-              Padding(padding: EdgeInsets.only(top: 3)),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.blueAccent, shape: BoxShape.circle),
-                        child: IconButton(
-                            onPressed: (() {
-                              setState(() {
-                                TeamAScore++;
-                              });
-                            }),
-                            icon: Icon(Icons.add))),
-                  ),
-                  SizedBox(
-                    width: 120,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.redAccent, shape: BoxShape.circle),
-                        child: IconButton(
-                            onPressed: (() {
-                              setState(() {
-                                TeamBScore++;
-                              });
-                            }),
-                            icon: Icon(Icons.add))),
+                      color: Colors.redAccent,
+                    ),
+                    height: 220,
                   )
                 ],
-              )
+              ),
             ],
           ),
         ],
@@ -162,6 +187,13 @@ class _ScoreBoardState extends State<ScoreBoard>
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void restartScore() {
+    setState(() {
+      TeamAScore = 0;
+      TeamBScore = 0;
+    });
   }
 
   @override

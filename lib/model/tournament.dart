@@ -6,27 +6,19 @@ class Tournament {
   final bool isDone;
   final String Admin;
   final int icon;
+  bool favorite = false;
+  final String Id;
 
   Tournament(
       {required this.name,
       required this.isDone,
       required this.Admin,
-      required this.icon});
+      required this.icon,
+      required this.Id});
 
-  factory Tournament.fromJson(Map<String, dynamic> json) {
-    return Tournament(
-        name: json['name'],
-        isDone: json['isDone'],
-        Admin: json['Admin'],
-        icon: json['icon']);
+  void SetFavorite(bool b) {
+    favorite = b;
   }
-  factory Tournament.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document) {
-    final data = document.data();
-    return Tournament(
-        name: document.id,
-        isDone: data!['isDone'],
-        Admin: data!['Admin'],
-        icon: data!['icon']);
-  }
+
+  void add(Tournament tournament) {}
 }

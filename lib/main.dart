@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
+import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/Auth/login_screen.dart';
 import 'package:flutter_complete_guide/screens/main_app_page.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => TournamentProvider()),
+          ChangeNotifierProvider(create: (_) => FavoriteTournamentProvider())
         ],
         child: FutureBuilder(
             future: _initialization,

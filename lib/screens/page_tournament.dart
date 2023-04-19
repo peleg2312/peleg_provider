@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/components/IconList.dart';
 import 'package:flutter_complete_guide/model/element.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
+import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
+import 'package:flutter_complete_guide/screens/likes_tournament.dart';
 import 'package:flutter_complete_guide/screens/page_addtourna.dart';
 import 'package:flutter_complete_guide/screens/score_board.dart';
 import 'package:flutter_complete_guide/screens/tournament_detail.dart';
@@ -28,11 +30,16 @@ class _TournamentPageState extends State<TournamentPage>
     with SingleTickerProviderStateMixin {
   int index = 1;
   bool liked = false;
-
+  late TextEditingController searchBar = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    List<String>? SlikedTournament =
+        Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
     List<Tournament>? tournaments =
         Provider.of<TournamentProvider>(context).Tournaments;
+    List<Tournament>? likedTournament =
+        SortLikedTournament(SlikedTournament, tournaments);
+    SetFavorite(likedTournament, tournaments);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Align(
@@ -100,7 +107,25 @@ class _TournamentPageState extends State<TournamentPage>
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 40.0),
+            padding: EdgeInsets.all(15),
+            child: Center(
+              child: TextField(
+                controller: searchBar,
+                decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        searchBar.text = "";
+                      },
+                    ),
+                    hintText: 'Search...',
+                    border: InputBorder.none),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 0),
             child: Container(
                 height: 400,
                 padding: EdgeInsets.only(bottom: 25.0),
@@ -118,7 +143,7 @@ class _TournamentPageState extends State<TournamentPage>
                               height: 70,
                               child: Center(
                                 child: ListTile(
-                                  leading: IconsList[index],
+                                  leading: IconsList[tournaments[index].icon],
                                   title: Text(
                                     tournaments[index].name,
                                     style: TextStyle(
@@ -127,7 +152,7 @@ class _TournamentPageState extends State<TournamentPage>
                                         fontSize: 20),
                                   ),
                                   trailing: IconButton(
-                                    icon: liked == false
+                                    icon: !tournaments[index].favorite
                                         ? Icon(Icons.favorite_border)
                                         : Icon(
                                             Icons.favorite,
@@ -136,7 +161,13 @@ class _TournamentPageState extends State<TournamentPage>
                                           ),
                                     onPressed: () {
                                       setState(() {
-                                        liked = !liked;
+                                        Provider.of<FavoriteTournamentProvider>(
+                                                context,
+                                                listen: false)
+                                            .FavoriteTournament(
+                                                tournaments[index]);
+                                        tournaments[index].SetFavorite(
+                                            !tournaments[index].favorite);
                                       });
                                     },
                                   ),
@@ -253,5 +284,30 @@ class _TournamentPageState extends State<TournamentPage>
       ),
     );
     //Navigator.of(context).pushNamed('/new');
+  }
+
+  List<Tournament> SortLikedTournament(
+      List<String> likedTournament, List<Tournament> tournaments) {
+    List<Tournament> liked = <Tournament>[];
+
+    for (var tournament in tournaments) {
+      for (var item in likedTournament) {
+        if (tournament.Id == item) {
+          liked.add(tournament);
+        }
+      }
+    }
+    return liked;
+  }
+
+  void SetFavorite(
+      List<Tournament> likedTournament, List<Tournament> tournaments) {
+    for (var ftournament in likedTournament) {
+      for (var tournament in tournaments) {
+        if (ftournament.name == tournament.name) {
+          tournament.SetFavorite(true);
+        }
+      }
+    }
   }
 }
