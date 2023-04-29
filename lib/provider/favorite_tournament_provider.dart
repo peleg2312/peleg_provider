@@ -51,20 +51,20 @@ class FavoriteTournamentProvider extends ChangeNotifier {
 
     if (isExist == false) {
       tournament.SetFavorite(true);
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection("userFavorite")
           .doc(authResult!.uid)
           .collection("tournament")
           .doc(tournament.Id)
           .set({"name": tournament.name});
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection("userFavorite")
           .doc(authResult!.uid)
           .set({"userName": authResult?.displayName});
       favoriteTournaments.add(tournament.Id);
     } else {
       tournament.SetFavorite(false);
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection("userFavorite")
           .doc(authResult!.uid)
           .collection("tournament")

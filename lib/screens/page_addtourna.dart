@@ -10,6 +10,8 @@ import 'package:flutter_complete_guide/provider/auth_provider.dart';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
+import 'package:flutter_complete_guide/screens/tournament_detail.dart';
+import 'package:flutter_complete_guide/screens/tournament_settings.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
@@ -161,10 +163,16 @@ class _NewTournamentPageState extends State<NewTournamentPage> {
                                 elevation: 4.0,
                                 backgroundColor: Colors.deepPurple),
                             onPressed: () {
-                              Provider.of<TournamentProvider>(context,
-                                      listen: false)
-                                  .addTournamentToFirebase(listNameController,
-                                      IsDone, context, IconPicker);
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      TournamentSettings(),
+                                ),
+                              );
+                              //Provider.of<TournamentProvider>(context,
+                              //        listen: false)
+                              //   .addTournamentToFirebase(listNameController,
+                              //       IsDone, context, IconPicker);
                             },
                           ),
                         ],
