@@ -28,13 +28,13 @@ class SigninContainer extends StatelessWidget {
         ClipPath(
           clipper: CustomSelfClipper2(),
           child: Container(
-              height: MediaQuery.of(context).size.height * .5,
+              height: MediaQuery.of(context).size.height * 2,
               width: MediaQuery.of(context).size.width * 1,
               decoration: BoxDecoration(
                 color: Color.fromRGBO(80, 86, 96, 1),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 158, horizontal: 30),
+                padding: EdgeInsets.symmetric(vertical: 140, horizontal: 30),
                 child: Text('Welcome\nBack',
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,

@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/likes_tournament.dart';
-import 'package:flutter_complete_guide/screens/my_tournament.dart';
-import 'package:flutter_complete_guide/screens/score_board.dart';
+import 'package:flutter_complete_guide/screens/main_page.dart';
+
 import 'package:flutter_complete_guide/screens/page_tournament.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -22,10 +22,7 @@ class _MainScreenState extends State<MainScreen>
   int _currentIndex = 0;
 
   final List<Widget> _children = [
-    TournamentPage(),
-    MyTournamnt(),
-    LikedTournament(),
-    ScoreBoard(),
+    HomePageWidget(),
   ];
 
   @override

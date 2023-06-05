@@ -2,9 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
 import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
+import 'package:flutter_complete_guide/provider/match_provider.dart';
+import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/Auth/login_screen.dart';
 import 'package:flutter_complete_guide/screens/main_app_page.dart';
+import 'package:flutter_complete_guide/screens/main_page.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/Auth/register.dart';
@@ -24,6 +27,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider(create: (_) => TeamProvider()),
+          ChangeNotifierProvider(create: (_) => MatchProvider()),
           ChangeNotifierProvider(create: (_) => TournamentProvider()),
           ChangeNotifierProvider(create: (_) => FavoriteTournamentProvider())
         ],
@@ -33,7 +38,8 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 title: 'FlutterChat',
                 theme: ThemeData(
-                  scaffoldBackgroundColor: Color.fromARGB(255, 67, 75, 95),
+                  primarySwatch: Colors.red,
+                  scaffoldBackgroundColor: Color(0xFF1B1B1F),
                   buttonTheme: ButtonTheme.of(context).copyWith(
                     textTheme: ButtonTextTheme.primary,
                     shape: RoundedRectangleBorder(
@@ -46,7 +52,7 @@ class MyApp extends StatelessWidget {
                     stream: FirebaseAuth.instance.authStateChanges(),
                     builder: (ctx, userSnapshot) {
                       if (userSnapshot.hasData) {
-                        return MainScreen();
+                        return HomePageWidget();
                       }
                       return AuthScreen();
                     }),

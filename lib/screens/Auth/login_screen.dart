@@ -24,12 +24,8 @@ class _SignInPageState extends State<SignInPage> {
 
     if (isValid!) {
       _formKey.currentState!.save();
-      Provider.of<AuthProvider>(context, listen: false).submitAuthForm(
-          _userEmail.trim(),
-          _userPassword.trim(),
-          _userName.trim(),
-          _isLogin,
-          context);
+      Provider.of<AuthProvider>(context, listen: false)
+          .submitAuthForm(_userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin, context);
       // Navigator.push(
       //context, MaterialPageRoute(builder: (context) => AuthScreen()));
     }
@@ -73,13 +69,10 @@ class _SignInPageState extends State<SignInPage> {
           decoration: InputDecoration(
             // hintText: 'Enter your full name',
             labelText: 'Email',
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 49, 49, 49),
-                fontWeight: FontWeight.w500,
-                fontSize: 13),
+            labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(255, 49, 49, 49),
+                color: Colors.white54,
               ),
             ),
           ),
@@ -106,13 +99,10 @@ class _SignInPageState extends State<SignInPage> {
           },
           decoration: InputDecoration(
             labelText: 'Password',
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 49, 49, 49),
-                fontWeight: FontWeight.w500,
-                fontSize: 13),
+            labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(255, 49, 49, 49),
+                color: Colors.white54,
               ),
             ),
           ),
@@ -122,8 +112,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Widget _submitButton() {
-    final isLoading =
-        Provider.of<AuthProvider>(context, listen: true).isLoading;
+    final isLoading = Provider.of<AuthProvider>(context, listen: true).isLoading;
     return Align(
         alignment: Alignment.centerRight,
         child: Column(
@@ -134,28 +123,22 @@ class _SignInPageState extends State<SignInPage> {
                 //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
                 _trySubmit();
               },
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Sign in',
-                      style: TextStyle(
-                          color: Color.fromRGBO(76, 81, 93, 1),
-                          fontSize: 25,
-                          fontWeight: FontWeight.w500,
-                          height: 1.6),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text(
+                  'Sign in',
+                  style: TextStyle(
+                      color: Color.fromRGBO(76, 81, 93, 1), fontSize: 25, fontWeight: FontWeight.w500, height: 1.6),
+                ),
+                SizedBox.fromSize(
+                  size: Size.square(70.0), // button width and height
+                  child: ClipOval(
+                    child: Material(
+                      color: Color.fromRGBO(76, 81, 93, 1),
+                      child: Icon(Icons.arrow_forward, color: Colors.white), // button color
                     ),
-                    SizedBox.fromSize(
-                      size: Size.square(70.0), // button width and height
-                      child: ClipOval(
-                        child: Material(
-                          color: Color.fromRGBO(76, 81, 93, 1),
-                          child: Icon(Icons.arrow_forward,
-                              color: Colors.white), // button color
-                        ),
-                      ),
-                    ),
-                  ]),
+                  ),
+                ),
+              ]),
             ),
           ],
         ));
@@ -169,29 +152,15 @@ class _SignInPageState extends State<SignInPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           InkWell(
-            onTap: () => Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AuthScreen())),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen())),
             child: Text(
               'Register',
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline,
-                  decorationThickness: 2),
-            ),
-          ),
-          InkWell(
-            // onTap: () {
-            //   // Navigator.push(
-            //   //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
-            // },
-            child: Text(
-              'Forgot Password',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  decorationThickness: 2),
+                  decorationThickness: 2,
+                  color: Colors.white54),
             ),
           ),
         ],
@@ -207,9 +176,7 @@ class _SignInPageState extends State<SignInPage> {
         height: height,
         child: Stack(
           children: [
-            Positioned(
-                height: MediaQuery.of(context).size.height * 0.50,
-                child: SigninContainer()),
+            Positioned(height: MediaQuery.of(context).size.height * 0.50, child: SigninContainer()),
             SingleChildScrollView(
               child: Form(
                 key: _formKey,

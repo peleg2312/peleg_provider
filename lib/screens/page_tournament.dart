@@ -1,16 +1,16 @@
+import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_complete_guide/components/IconList.dart';
-import 'package:flutter_complete_guide/model/element.dart';
+import 'package:flutter_complete_guide/model/OLD/element.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/likes_tournament.dart';
-import 'package:flutter_complete_guide/screens/page_addtourna.dart';
-import 'package:flutter_complete_guide/screens/score_board.dart';
-import 'package:flutter_complete_guide/screens/tournament_detail.dart';
+import 'package:flutter_complete_guide/screens/TournamentSettings/tournament_detail.dart';
+import 'package:flutter_complete_guide/screens/tournament_settings.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../model/tournament.dart';
@@ -26,19 +26,15 @@ class TournamentPage extends StatefulWidget {
   State<StatefulWidget> createState() => _TournamentPageState();
 }
 
-class _TournamentPageState extends State<TournamentPage>
-    with SingleTickerProviderStateMixin {
+class _TournamentPageState extends State<TournamentPage> with SingleTickerProviderStateMixin {
   int index = 1;
-  bool liked = false;
+  //bool liked = false;
   late TextEditingController searchBar = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    List<String>? SlikedTournament =
-        Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
-    List<Tournament>? tournaments =
-        Provider.of<TournamentProvider>(context).Tournaments;
-    List<Tournament>? likedTournament =
-        SortLikedTournament(SlikedTournament, tournaments);
+    List<String>? SlikedTournament = Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
+    List<Tournament>? tournaments = Provider.of<TournamentProvider>(context).Tournaments;
+    List<Tournament>? likedTournament = SortLikedTournament(SlikedTournament, tournaments);
     SetFavorite(likedTournament, tournaments);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -82,15 +78,11 @@ class _TournamentPageState extends State<TournamentPage>
                           children: <Widget>[
                             Text(
                               'Tournament',
-                              style: new TextStyle(
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
+                              style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.grey),
                             ),
                             Text(
                               'Lists',
-                              style: new TextStyle(
-                                  fontSize: 28.0, color: Colors.white70),
+                              style: new TextStyle(fontSize: 28.0, color: Colors.white70),
                             )
                           ],
                         )),
@@ -109,20 +101,35 @@ class _TournamentPageState extends State<TournamentPage>
           Padding(
             padding: EdgeInsets.all(15),
             child: Center(
-              child: TextField(
-                controller: searchBar,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        searchBar.text = "";
-                      },
-                    ),
-                    hintText: 'Search...',
-                    border: InputBorder.none),
-              ),
-            ),
+                child: AnimSearchBar(
+              width: 380,
+              textController: searchBar,
+              //textFieldColor: Colors.white70,
+              onSuffixTap: () {
+                setState(() {
+                  searchBar.clear();
+                });
+              },
+              color: Colors.deepPurple,
+              helpText: "Search Tournament",
+              closeSearchOnSuffixTap: true,
+              animationDurationInMilli: 500,
+              onSubmitted: (p0) {},
+            )
+                // TextField(
+                //   controller: searchBar,
+                //   decoration: InputDecoration(
+                //       prefixIcon: const Icon(Icons.search),
+                //       suffixIcon: IconButton(
+                //         icon: const Icon(Icons.clear),
+                //         onPressed: () {
+                //           searchBar.text = "";
+                //         },
+                //       ),
+                //       hintText: 'Search...',
+                //       border: InputBorder.none),
+                // ),
+                ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 0),
@@ -138,23 +145,15 @@ class _TournamentPageState extends State<TournamentPage>
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Color.fromRGBO(87, 95, 113, 1)),
+                                  borderRadius: BorderRadius.circular(10), color: Color.fromRGBO(87, 95, 113, 1)),
                               height: 70,
                               child: Center(
                                 child: ListTile(
                                   key: new Key(index.toString()),
-                                  subtitle:
-                                      tournaments![index].isStarted == false
-                                          ? Text("in registration")
-                                          : Text("in progress"),
                                   leading: IconsList[tournaments[index].icon],
                                   title: Text(
                                     tournaments[index].name,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 20),
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 20),
                                   ),
                                   trailing: IconButton(
                                     icon: !tournaments[index].favorite
@@ -166,11 +165,8 @@ class _TournamentPageState extends State<TournamentPage>
                                           ),
                                     onPressed: () {
                                       setState(() {
-                                        Provider.of<FavoriteTournamentProvider>(
-                                                context,
-                                                listen: false)
-                                            .FavoriteTournament(
-                                                tournaments[index]);
+                                        Provider.of<FavoriteTournamentProvider>(context, listen: false)
+                                            .FavoriteTournament(tournaments[index]);
                                       });
                                     },
                                   ),
@@ -206,11 +202,10 @@ class _TournamentPageState extends State<TournamentPage>
   void _addTaskPressed() async {
     Navigator.of(context).push(
       new PageRouteBuilder(
-        pageBuilder: (_, __, ___) => new NewTournamentPage(
+        pageBuilder: (_, __, ___) => new TournamentSettings(
             //user: widget.user,
             ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            new ScaleTransition(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => new ScaleTransition(
           scale: new Tween<double>(
             begin: 1.5,
             end: 1.0,
@@ -252,8 +247,7 @@ class _TournamentPageState extends State<TournamentPage>
         pageBuilder: (_, __, ___) => new DetailPage(
           tournament: tournament,
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            new ScaleTransition(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => new ScaleTransition(
           scale: new Tween<double>(
             begin: 1.5,
             end: 1.0,
@@ -289,8 +283,7 @@ class _TournamentPageState extends State<TournamentPage>
     //Navigator.of(context).pushNamed('/new');
   }
 
-  List<Tournament> SortLikedTournament(
-      List<String> likedTournament, List<Tournament> tournaments) {
+  List<Tournament> SortLikedTournament(List<String> likedTournament, List<Tournament> tournaments) {
     List<Tournament> liked = <Tournament>[];
 
     for (var tournament in tournaments) {
@@ -303,8 +296,7 @@ class _TournamentPageState extends State<TournamentPage>
     return liked;
   }
 
-  void SetFavorite(
-      List<Tournament> likedTournament, List<Tournament> tournaments) {
+  void SetFavorite(List<Tournament> likedTournament, List<Tournament> tournaments) {
     for (var ftournament in likedTournament) {
       for (var tournament in tournaments) {
         if (ftournament.name == tournament.name) {

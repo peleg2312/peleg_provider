@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Tournament {
-  final String name;
+  String name;
   final bool isDone;
   final String Admin;
-  final int icon;
+  int icon;
   bool favorite = false;
   final String Id;
-  bool isStarted;
+  bool isSearchingWinner;
+  String tournamentType;
 
   Tournament(
       {required this.name,
@@ -16,14 +17,11 @@ class Tournament {
       required this.Admin,
       required this.icon,
       required this.Id,
-      required this.isStarted});
+      required this.isSearchingWinner,
+      required this.tournamentType});
 
   void SetFavorite(bool b) {
     favorite = b;
-  }
-
-  void ChangeIsStarted() {
-    isStarted = !isStarted;
   }
 
   void add(Tournament tournament) {}

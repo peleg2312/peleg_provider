@@ -11,6 +11,7 @@ class AuthProvider extends ChangeNotifier {
   var isLoading = false;
   bool saving = false;
 
+  //מקבל מהזנה של משתמש אימייל סיסמה והאם הוא רק מתחבר או יוצר משתשמש
   void submitAuthForm(
     String email,
     String password,
@@ -32,10 +33,7 @@ class AuthProvider extends ChangeNotifier {
           email: email,
           password: password,
         );
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(authResult.user?.uid)
-            .set({
+        FirebaseFirestore.instance.collection('users').doc(authResult.user?.uid).set({
           'username': username,
           'email': email,
         });
@@ -62,108 +60,6 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  //מחבר את המשתמש למשתמש שלו ויוצר משתמש חדש במידת הצורך
 
-  void addListToFirebase(Color currentColor,
-      TextEditingController listNameController, BuildContext context) async {
-    User? authResult = _auth.currentUser;
-    saving = true;
-    bool isExist = false;
-
-    QuerySnapshot query =
-        await FirebaseFirestore.instance.collection(authResult!.uid).get();
-
-    query.docs.forEach((doc) {
-      if (listNameController.text.toString() == doc.id) {
-        isExist = true;
-      }
-    });
-
-    if (isExist == false && listNameController.text.isNotEmpty) {
-      await FirebaseFirestore.instance
-          .collection(authResult.uid)
-          .doc("TaskList")
-          .collection("Tasks")
-          .doc(listNameController.text.toString().trim())
-          .set({
-        "color": currentColor.value.toString(),
-        "date": DateTime.now().millisecondsSinceEpoch
-      });
-
-      listNameController.clear();
-
-      //pickerColor = Color(0xff6633ff);
-      currentColor = Color(0xff6633ff);
-
-      Navigator.of(context).pop();
-    }
-    if (isExist == true) {
-      showInSnackBar("This list already exists", context, currentColor);
-      saving = false;
-    }
-    if (listNameController.text.isEmpty) {
-      showInSnackBar("Please enter a name", context, currentColor);
-      saving = false;
-    }
-  }
-
-  void addTaskToFirebase(DateTime dateTime,
-      TextEditingController listNameController, BuildContext context) async {
-    User? authResult = _auth.currentUser;
-    saving = true;
-    bool isExist = false;
-
-    QuerySnapshot query =
-        await FirebaseFirestore.instance.collection(authResult!.uid).get();
-
-    query.docs.forEach((doc) {
-      if (listNameController.text.toString() == doc.id) {
-        isExist = true;
-      }
-    });
-
-    if (isExist == false && listNameController.text.isNotEmpty) {
-      await FirebaseFirestore.instance
-          .collection(authResult.uid)
-          .doc("TaskByTime")
-          .collection("Tasks")
-          .doc(listNameController.text.toString().trim())
-          .set({
-        "dateTime": dateTime.toString(),
-        "date": DateTime.now().millisecondsSinceEpoch
-      });
-
-      listNameController.clear();
-
-      Navigator.of(context).pop();
-    }
-    if (isExist == true) {
-      showInSnackBar("This list already exists", context, Colors.grey);
-      saving = false;
-    }
-    if (listNameController.text.isEmpty) {
-      showInSnackBar("Please enter a name", context, Colors.grey);
-      saving = false;
-    }
-  }
-
-  void addFavorite() {
-    User? authResult = _auth.currentUser;
-    List<Tournament> favoriteTournaments = <Tournament>[];
-
-    FirebaseFirestore.instance.collection('users').doc(authResult?.uid).set({
-      'username': authResult?.displayName,
-      'email': authResult?.email,
-      'favorite': favoriteTournaments
-    });
-  }
-
-  void showInSnackBar(String value, BuildContext context, Color color) {
-    ScaffoldMessenger.of(context)?.removeCurrentSnackBar();
-
-    ScaffoldMessenger.of(context)?.showSnackBar(new SnackBar(
-      content: new Text(value, textAlign: TextAlign.center),
-      backgroundColor: color,
-      duration: Duration(seconds: 3),
-    ));
-  }
 }
