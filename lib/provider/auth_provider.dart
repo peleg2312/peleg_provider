@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_complete_guide/model/tournament.dart';
-import 'package:provider/provider.dart';
 
 class AuthProvider extends ChangeNotifier {
   late String Uid;
@@ -11,7 +9,8 @@ class AuthProvider extends ChangeNotifier {
   var isLoading = false;
   bool saving = false;
 
-  //מקבל מהזנה של משתמש אימייל סיסמה והאם הוא רק מתחבר או יוצר משתשמש
+  //input: email, password, username, isLogin ,ctx
+  //output: creating/sign in your account
   void submitAuthForm(
     String email,
     String password,
@@ -60,6 +59,4 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  //מחבר את המשתמש למשתמש שלו ויוצר משתמש חדש במידת הצורך
-
 }

@@ -1,19 +1,18 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/components/IconList.dart';
+import 'package:flutter_complete_guide/components/Icon_list.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/match_provider.dart';
 import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
-import 'package:flutter_complete_guide/screens/TournamentSettings/edit_tournament.dart';
-import 'package:flutter_complete_guide/screens/TournamentSettings/my_tournament_edit.dart';
-import 'package:flutter_complete_guide/screens/TournamentSettings/new_tournament.dart';
-import 'package:flutter_complete_guide/screens/TournamentSettings/tournament_detail.dart';
-import 'package:flutter_complete_guide/screens/likes_tournament.dart';
-import 'package:flutter_complete_guide/screens/my_tournament.dart';
-import 'package:flutter_complete_guide/screens/tournament_settings.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/edit_tournament.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/my_tournament_edit.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/new_tournament.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/tournament_detail.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/favorite_tournament.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/my_tournament.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -36,12 +35,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   Tournament? _selected = Tournament(
       name: "name",
       isDone: false,
-      Admin: "Admin",
+      admin: "Admin",
       icon: 0,
       Id: "Id",
       isSearchingWinner: false,
       tournamentType: "roundrobin");
 
+  //output: fetch all of the data from Firebase(tournaments, matches, teams, favorite tournaments)
   @override
   void initState() {
     try {
@@ -74,6 +74,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     super.dispose();
   }
 
+  //input: context
+  //output: the main screen of the app where you can view your favoriet tournament, the tournaments you created and search for new ones
   @override
   Widget build(BuildContext context) {
     if (_display.isEmpty) {
@@ -178,7 +180,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       onChanged: (value) {
                         _DetailPressed(value!);
                       },
-                      //showSelectedItems: true,
                       showSearchBox: true,
                     )),
                 Container(
@@ -194,7 +195,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
-                      //crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -272,8 +272,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       borderRadius: BorderRadius.circular(10),
-                                                      //color: Color.fromRGBO(
-                                                      //87, 95, 113, 1)
                                                     ),
                                                     height: 50,
                                                     child: Center(
@@ -322,15 +320,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         ),
                                       ),
                                     ),
-                                    // Container(
-                                    //   height: 40,
-                                    //   width: 40,
-                                    //   child: InkWell(
-                                    //     onTap: null,
-                                    //     child: Image.asset(
-                                    //         "assets/images/show_more.png"),
-                                    //   ),
-                                    // ),
                                   )
                                 ],
                               ),
@@ -353,7 +342,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
-                        //crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -430,8 +418,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                     child: Container(
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(10),
-                                                        //color: Color.fromRGBO(
-                                                        //87, 95, 113, 1)
                                                       ),
                                                       height: 50,
                                                       child: Center(
@@ -465,17 +451,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                 onTap: () => _DetailPressed(likedTournament[index]),
                                               );
                                             })),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.all(8.0),
-                                    //   child: Container(
-                                    //     height: 40,
-                                    //     width: 40,
-                                    //     child: InkWell(
-                                    //       onTap: null,
-                                    //       child: Image.asset("assets/images/show_more.png"),
-                                    //     ),
-                                    //   ),
-                                    // )
                                   ],
                                 ),
                         ],
@@ -491,11 +466,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
+  //input: context, t
+  //output: new
   Widget _customDropDownMenu(BuildContext context, Tournament? t) {
     return Container(
       height: 300,
       decoration: BoxDecoration(color: Colors.green),
-      child: Text("ssss"),
+      child: Text(""),
     );
   }
 
@@ -506,7 +483,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            //color: Color.fromRGBO(118, 118, 118, 0.332)
           ),
           height: 60,
           child: Center(
@@ -516,22 +492,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 item.name,
                 style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w500, fontSize: 20),
               ),
-              // trailing: IconButton(
-              //   icon: !item.favorite
-              //       ? Icon(Icons.favorite_border)
-              //       : Icon(
-              //           Icons.favorite,
-              //           color: Colors.deepPurple,
-              //           shadows: [Shadow(blurRadius: 7)],
-              //         ),
-              //   onPressed: () {
-              //     setState(() {
-              //       Provider.of<FavoriteTournamentProvider>(context,
-              //               listen: false)
-              //           .FavoriteTournament(item);
-              //     });
-              //   },
-              // ),
             ),
           ),
         ),
@@ -575,27 +535,20 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   void _addTaskPressed() async {
     Navigator.of(context).push(
-      new PageRouteBuilder(
-          pageBuilder: (_, __, ___) => new NewTournament(
-              //user: widget.user,
-              ),
-          transitionsBuilder: ScreenAnimation),
+      new PageRouteBuilder(pageBuilder: (_, __, ___) => new NewTournament(), transitionsBuilder: ScreenAnimation),
     );
-    //Navigator.of(context).pushNamed('/new');
   }
 
   void _favoritePage(List<Tournament> arr) async {
     Navigator.of(context).push(
       new PageRouteBuilder(pageBuilder: (_, __, ___) => new LikedTournament(arr), transitionsBuilder: ScreenAnimation),
     );
-    //Navigator.of(context).pushNamed('/new');
   }
 
   void _YourTournamentPage(List<Tournament> arr) async {
     Navigator.of(context).push(
       new PageRouteBuilder(pageBuilder: (_, __, ___) => new MyTournament(arr), transitionsBuilder: ScreenAnimation),
     );
-    //Navigator.of(context).pushNamed('/new');
   }
 
   void _UpdatePressed(Tournament tournament) async {
@@ -606,13 +559,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               ),
           transitionsBuilder: ScreenAnimation),
     );
-    //Navigator.of(context).pushNamed('/new');
   }
 
   void _DetailPressed(Tournament tournament) async {
     Navigator.of(context).push(
       new PageRouteBuilder(
-          pageBuilder: (_, __, ___) => tournament.Admin == FirebaseAuth.instance.currentUser?.uid
+          pageBuilder: (_, __, ___) => tournament.admin == FirebaseAuth.instance.currentUser?.uid
               ? new MyDetailPage(
                   tournament: tournament,
                 )
@@ -621,7 +573,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ),
           transitionsBuilder: ScreenAnimation),
     );
-    //Navigator.of(context).pushNamed('/new');
   }
 
   void LogOut() {
@@ -648,6 +599,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             )));
   }
 
+  //input:
   List<Tournament> SortLikedTournament(List<String> likedTournament, List<Tournament> tournaments) {
     List<Tournament> liked = <Tournament>[];
 
@@ -677,12 +629,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     }
   }
 
+  //input: tournaments
+  //output: new List<Tournament>
   List<Tournament> AdminTournament(List<Tournament> tournaments) {
     User? authResult = FirebaseAuth.instance.currentUser;
     List<Tournament> myTournament = <Tournament>[];
 
     for (var tournament in tournaments) {
-      if (tournament.Admin == authResult!.uid) {
+      if (tournament.admin == authResult!.uid) {
         myTournament.add(tournament);
       }
       ;

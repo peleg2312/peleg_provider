@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/components/IconList.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
-import 'package:flutter_complete_guide/screens/TournamentSettings/teams_maneger.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/teams_maneger.dart';
 import 'package:provider/provider.dart';
 
 class NewTournament extends StatefulWidget {

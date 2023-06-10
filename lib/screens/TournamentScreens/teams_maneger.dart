@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/provider/match_provider.dart';
 import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
-import 'package:flutter_complete_guide/screens/tournament_schedule.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +22,8 @@ class _TeamsManegerState extends State<TeamsManeger> {
   String tournamentType = "roundrobin";
   String _dropDownValue = "Points";
 
+  //input: context
+  //output: create new screen that lets you to add team and choose the tournamentType and create the matches for you base on the type
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -258,12 +259,6 @@ class _TeamsManegerState extends State<TeamsManeger> {
                                             style: TextStyle(
                                                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 20),
                                           ),
-                                          // trailing: IconButton(
-                                          //   icon: Icon(Icons.edit),
-                                          //   onPressed: () {
-                                          //     setState(() {});
-                                          //   },
-                                          // ),
                                         ),
                                       ),
                                     ),
@@ -281,7 +276,8 @@ class _TeamsManegerState extends State<TeamsManeger> {
     );
   }
 
-  Container _getToolbar(BuildContext context) {
+  //output: new Container with back button
+  Container _getToolbar() {
     return new Container(
       margin: new EdgeInsets.only(left: 10.0, top: 40.0),
       child: Row(
@@ -290,18 +286,12 @@ class _TeamsManegerState extends State<TeamsManeger> {
           SizedBox(
             width: 10,
           ),
-          // Text(
-          //   widget.tournament.name,
-          //   style: new TextStyle(
-          //       fontSize: 24.0,
-          //       fontWeight: FontWeight.w500,
-          //       color: Colors.black),
-          // ),
         ],
       ),
     );
   }
 
+  //output: new dialog that let you choose the team name and add new Team to the local list and Firebase
   void _showDialog() {
     showDialog(
         context: context,
@@ -354,6 +344,8 @@ class _TeamsManegerState extends State<TeamsManeger> {
         }));
   }
 
+  //input: value, context, color
+  //output: make visual SnackBar with error message
   void showInSnackBar(String value, BuildContext context, Color color) {
     ScaffoldMessenger.of(context)?.removeCurrentSnackBar();
 
@@ -362,13 +354,5 @@ class _TeamsManegerState extends State<TeamsManeger> {
       backgroundColor: color,
       duration: Duration(seconds: 3),
     ));
-  }
-
-  void dropDownCallback(String? selectedValue) {
-    if (selectedValue is String) {
-      setState(() {
-        _dropDownValue = selectedValue;
-      });
-    }
   }
 }

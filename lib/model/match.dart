@@ -6,7 +6,8 @@ class GameMatch {
   String? winnerId = null;
   String tId;
   String id;
-  // int gameGroup=1;
 
+  //input: homeTeamId, awayTeamId, winnerId, tId, id
+  //output: new GameMatch
   GameMatch({required this.homeTeamId, required this.awayTeamId, this.winnerId, required this.tId, required this.id});
 }

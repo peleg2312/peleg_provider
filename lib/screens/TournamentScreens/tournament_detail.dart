@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_complete_guide/model/match.dart';
 import 'package:flutter_complete_guide/model/team.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/match_provider.dart';
 import 'package:flutter_complete_guide/provider/team_provider.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
 class DetailPage extends StatefulWidget {
@@ -29,6 +25,7 @@ class DetailPageState extends State<DetailPage> {
   List<Team> teams = [];
   List<GameMatch> schedule = [];
 
+  //output: get the GameMaches that the tournament contain and list of teams
   @override
   void didChangeDependencies() {
     schedule = Provider.of<MatchProvider>(context).getMatchForTournment(widget.tournament.Id);
@@ -36,12 +33,15 @@ class DetailPageState extends State<DetailPage> {
     super.didChangeDependencies();
   }
 
+  //output: set liked as the touranemnt.favorite
   @override
   void initState() {
     liked = widget.tournament.favorite;
     super.initState();
   }
 
+  //input: context
+  //output: create new screen that show the details of the tournament
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +57,6 @@ class DetailPageState extends State<DetailPage> {
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(40), color: Colors.red),
                     height: 30,
                     width: 80,
-                    //margin: new EdgeInsets.only(left: 15.0, top: 60.0),
                     child: TextButton.icon(
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -151,6 +150,7 @@ class DetailPageState extends State<DetailPage> {
         ])));
   }
 
+  //output: decorated container with back button
   Container _getToolbar(BuildContext context) {
     return new Container(
       margin: new EdgeInsets.only(left: 10.0, top: 40.0),

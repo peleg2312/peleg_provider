@@ -7,5 +7,7 @@ class Team {
   String userId;
   int gamePlayed;
 
+  //input: name, id, tId, userId, gamePlayed
+  //output: new Team
   Team({required this.name, required this.id, required this.tId, required this.userId, required this.gamePlayed});
 }

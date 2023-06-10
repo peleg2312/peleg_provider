@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-late Color color;
-
-Widget GetIcon(int x, Color color) {
+//input: Color, int
+//output: Widget Icon
+Widget GetIcon(int x, Color? color) {
   Widget icon = Icon(
     Icons.sports_basketball,
     size: 45,
