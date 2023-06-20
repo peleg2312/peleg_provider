@@ -19,6 +19,11 @@ class MatchProvider extends ChangeNotifier {
     return _matches.where((element) => element.tId == tourId).toList();
   }
 
+  //output: reset the List
+  void resetList() {
+    _matches = [];
+  }
+
   //output: getting data from firebase and putting it inside _match list
   Future<void> fetchMatchData(context) async {
     try {
@@ -27,10 +32,10 @@ class MatchProvider extends ChangeNotifier {
           value.docs.forEach(
             (result) {
               GameMatch newM = GameMatch(
-                  winnerId: result.data().toString().contains("winnerId") ? result["winnerId"] : null,
+                  winnerId: result.data().toString().contains("winner") ? result["winner"] : null,
                   tId: result["tournamentId"],
-                  awayTeamId: result["awayTeamId"],
-                  homeTeamId: result["homeTeamId"],
+                  awayTeamId: result["awayTeam"],
+                  homeTeamId: result["homeTeam"],
                   id: result.id);
               _matches.add(newM);
             },

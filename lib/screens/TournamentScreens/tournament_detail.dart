@@ -141,8 +141,12 @@ class DetailPageState extends State<DetailPage> {
                   subtitle: Text('${homeTeam.name ?? 'TBD'} vs ${awayTeam.name ?? 'TBD'}',
                       style: TextStyle(color: Colors.white60)),
                   trailing: match.winnerId == null
-                      ? Text('No Winner Yet')
-                      : Text(Provider.of<TeamProvider>(context, listen: false).findTeam(match.winnerId).name),
+                      ? Text(
+                          'No Winner Yet',
+                          style: TextStyle(color: Colors.white54),
+                        )
+                      : Text(Provider.of<TeamProvider>(context, listen: false).findTeam(match.winnerId).name,
+                          style: TextStyle(color: Colors.white54)),
                 );
               },
             ),

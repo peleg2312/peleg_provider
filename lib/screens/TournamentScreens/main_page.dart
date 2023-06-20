@@ -30,6 +30,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   List<Tournament> _display = [];
   List<Tournament> tournaments = [];
   bool myTournamentViewMore = false;
+  List<String> SlikedTournament = [];
+  List<Tournament> likedTournament = [];
+  List<Tournament> myTournament = [];
   FocusNode myFocusNode = FocusNode();
   double hightIndex = 70;
   double hightIndex2 = 70;
@@ -82,11 +85,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     if (_display.isEmpty) {
       _display = List.from(tournaments);
     }
-    List<String>? SlikedTournament = Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
+    SlikedTournament = Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
     tournaments = Provider.of<TournamentProvider>(context).Tournaments;
-    List<Tournament>? likedTournament = SortLikedTournament(SlikedTournament, tournaments);
+    likedTournament = SortLikedTournament(SlikedTournament, tournaments);
     SetFavorite(likedTournament, tournaments);
-    List<Tournament>? myTournament = AdminTournament(tournaments);
+    myTournament = AdminTournament(tournaments);
     if (myTournament.length > 1) {
       hightIndex = 140;
     }
@@ -607,6 +610,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 TextButton(
                   child: Text('Yes'),
                   onPressed: () {
+                    Provider.of<TournamentProvider>(context, listen: false).resetList();
+                    Provider.of<TeamProvider>(context, listen: false).resetList();
+                    Provider.of<MatchProvider>(context, listen: false).resetList();
+                    Provider.of<FavoriteTournamentProvider>(context, listen: false).resetList();
+                    tournaments = [];
+                    likedTournament = [];
+                    SlikedTournament = [];
+                    myTournament = [];
                     FirebaseAuth.instance.signOut();
                     Navigator.of(ctx).pop();
                     setState(() {});

@@ -38,6 +38,11 @@ class TeamProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //output: reset the List
+  void resetList() {
+    _teams = [];
+  }
+
   //input: Team
   //output: delete the Team from the app
   void deleteTeam(Team team) {

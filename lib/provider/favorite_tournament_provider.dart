@@ -6,11 +6,16 @@ import 'package:flutter_complete_guide/model/tournament.dart';
 
 class FavoriteTournamentProvider extends ChangeNotifier {
   User? authResult = FirebaseAuth.instance.currentUser;
-  final List<String> favoriteTournaments = <String>[];
+  List<String> favoriteTournaments = <String>[];
 
   //output: copy of favoriteTournaments
   List<String> get FavoriteTournaments {
     return [...favoriteTournaments];
+  }
+
+  //output: reset the List
+  void resetList() {
+    favoriteTournaments = [];
   }
 
   //output: getting data from firebase and putting it inside _match list

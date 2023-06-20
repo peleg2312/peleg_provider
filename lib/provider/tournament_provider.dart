@@ -6,7 +6,7 @@ import 'package:flutter_complete_guide/model/tournament.dart';
 class TournamentProvider extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   bool saving = false;
-  final List<Tournament> tournaments = <Tournament>[];
+  List<Tournament> tournaments = <Tournament>[];
 
   //output: copy of tournaments
   List<Tournament> get Tournaments {
@@ -53,6 +53,11 @@ class TournamentProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  //output: reset the List
+  void resetList() {
+    tournaments = [];
   }
 
   //input: listNameController, context, iconSelected
