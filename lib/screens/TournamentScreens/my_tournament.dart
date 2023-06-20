@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_complete_guide/components/Icon_list.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
-import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
+import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/tournament_detail.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/edit_tournament.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
 class MyTournament extends StatefulWidget {
@@ -23,6 +19,8 @@ class MyTournament extends StatefulWidget {
 class _MyTournamentState extends State<MyTournament> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  //input: context
+  //output: new screen where you can view all of the tournaments you created
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +75,6 @@ class _MyTournamentState extends State<MyTournament> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            //color: Color(0xCC979797)
                           ),
                           height: 55,
                           child: Center(
@@ -87,18 +84,63 @@ class _MyTournamentState extends State<MyTournament> {
                                 widget.myTournament[index].name,
                                 style: TextStyle(color: Color(0xCC979797), fontWeight: FontWeight.w500, fontSize: 20),
                               ),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  FontAwesomeIcons.edit,
-                                  color: Colors.red,
+                              trailing: Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: Container(
+                                  width: 100,
+                                  height: 50,
+                                  child: Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: ((context) => AlertDialog(
+                                                    title: Text("Tournamnet Delete"),
+                                                    content: Text("you sure you want to delete the tournament?"),
+                                                    actions: [
+                                                      TextButton(
+                                                        child: Text('No'),
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop(true);
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('Yes'),
+                                                        onPressed: () {
+                                                          Provider.of<TournamentProvider>(context, listen: false)
+                                                              .deleteTournament(widget.myTournament[index].Id);
+                                                          widget.myTournament.remove(widget.myTournament.firstWhere(
+                                                              (element) =>
+                                                                  element.Id == widget.myTournament[index].Id));
+                                                          Navigator.of(context).pop();
+                                                          setState(() {});
+                                                        },
+                                                      )
+                                                    ],
+                                                  )));
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          FontAwesomeIcons.edit,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                                builder: ((context) =>
+                                                    EditTournament(tournament: widget.myTournament[index]))));
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: ((context) =>
-                                            EditTournament(tournament: widget.myTournament[index]))));
-                                  });
-                                },
                               ),
                             ),
                           ),

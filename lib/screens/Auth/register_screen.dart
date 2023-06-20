@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_complete_guide/Widget/signupContainer.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
 import 'package:flutter_complete_guide/screens/Auth/login_screen.dart';
 import 'package:provider/provider.dart';
@@ -21,21 +20,19 @@ class _AuthScreenState extends State<AuthScreen> {
   var _userName = '';
   var _userPassword = '';
 
+  //output: if valid creating your account
   void _trySubmit() {
     final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
 
     if (isValid!) {
       _formKey.currentState!.save();
-      Provider.of<AuthProvider>(context, listen: false).submitAuthForm(
-          _userEmail.trim(),
-          _userPassword.trim(),
-          _userName.trim(),
-          _isLogin,
-          context);
+      Provider.of<AuthProvider>(context, listen: false)
+          .submitAuthForm(_userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin, context);
     }
   }
 
+  //output: new widget InkWell
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -55,6 +52,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  //output: new widget Stack with TextFormField
   Widget _nameWidget() {
     return Stack(
       children: [
@@ -70,17 +68,19 @@ class _AuthScreenState extends State<AuthScreen> {
           onSaved: (value) {
             _userName = value!;
           },
+          style: TextStyle(
+            fontSize: 18.0,
+            color: Colors.white70,
+            fontWeight: FontWeight.w500,
+          ),
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
             // hintText: 'Enter your full name',
             labelText: 'Name',
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 64, 64, 64),
-                fontWeight: FontWeight.w500,
-                fontSize: 13),
+            labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(255, 61, 61, 61),
+                color: Colors.white54,
               ),
             ),
           ),
@@ -89,6 +89,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  //output: new widget Stack with TextFormField
   Widget _emailWidget() {
     return Stack(
       children: [
@@ -105,16 +106,18 @@ class _AuthScreenState extends State<AuthScreen> {
           onSaved: (value) {
             _userEmail = value!;
           },
+          style: TextStyle(
+            fontSize: 22.0,
+            color: Colors.white70,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             // hintText: 'Enter your full name',
             labelText: 'Email',
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 63, 63, 63),
-                fontWeight: FontWeight.w500,
-                fontSize: 13),
+            labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(255, 63, 63, 63),
+                color: Colors.white54,
               ),
             ),
           ),
@@ -123,6 +126,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  //output: new widget Stack with TextFormField
   Widget _passwordWidget() {
     return Stack(
       children: [
@@ -139,15 +143,17 @@ class _AuthScreenState extends State<AuthScreen> {
           onSaved: (value) {
             _userPassword = value!;
           },
+          style: TextStyle(
+            fontSize: 22.0,
+            color: Colors.white70,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             labelText: 'Password',
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 63, 63, 63),
-                fontWeight: FontWeight.w500,
-                fontSize: 13),
+            labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(255, 66, 66, 66),
+                color: Colors.white54,
               ),
             ),
           ),
@@ -156,6 +162,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  //output: new widget Column with InkWell
   Widget _submitButton() {
     return Align(
       alignment: Alignment.centerRight,
@@ -163,23 +170,18 @@ class _AuthScreenState extends State<AuthScreen> {
         onTap: () {
           _trySubmit();
         },
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text(
             'Sign up',
-            style: TextStyle(
-                color: Color.fromARGB(255, 59, 59, 59),
-                fontSize: 25,
-                fontWeight: FontWeight.w500,
-                height: 1.6),
+            style:
+                TextStyle(color: Color.fromRGBO(76, 81, 93, 1), fontSize: 25, fontWeight: FontWeight.w500, height: 1.6),
           ),
           SizedBox.fromSize(
             size: Size.square(70.0), // button width and height
             child: ClipOval(
               child: Material(
                 color: Color.fromRGBO(76, 81, 93, 1),
-                child: Icon(Icons.arrow_forward,
-                    color: Color.fromARGB(255, 247, 247, 247)), // button color
+                child: Icon(Icons.arrow_forward, color: Color.fromARGB(255, 247, 247, 247)), // button color
               ),
             ),
           ),
@@ -188,19 +190,19 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  //output: new widget Container with InkWell
   Widget _createLoginLabel() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 20),
       alignment: Alignment.bottomLeft,
       child: InkWell(
-        onTap: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignInPage())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SignInPage())),
         child: Text(
           'Login',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 0, 0, 0),
+            color: Colors.white54,
             decoration: TextDecoration.underline,
             decorationThickness: 2,
           ),
@@ -209,6 +211,8 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  //input: context
+  //output: new screen where you can register to the app
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -217,9 +221,6 @@ class _AuthScreenState extends State<AuthScreen> {
         height: height,
         child: Stack(
           children: [
-            Positioned(
-                height: MediaQuery.of(context).size.height * 1,
-                child: SignUpContainer()),
             SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -235,7 +236,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           _emailWidget(),
                           SizedBox(height: 20),
                           _passwordWidget(),
-                          SizedBox(height: 80),
+                          SizedBox(height: 30),
                           _submitButton(),
                           SizedBox(height: height * .050),
                           _createLoginLabel(),

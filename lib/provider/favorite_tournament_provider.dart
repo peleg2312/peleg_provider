@@ -8,12 +8,12 @@ class FavoriteTournamentProvider extends ChangeNotifier {
   User? authResult = FirebaseAuth.instance.currentUser;
   final List<String> favoriteTournaments = <String>[];
 
-  //פעולה נקראת על מנת לקבל את הרשימה של הטורנירים
+  //output: copy of favoriteTournaments
   List<String> get FavoriteTournaments {
     return [...favoriteTournaments];
   }
-  //מחזיר שיכפול של הרשימה
 
+  //output: getting data from firebase and putting it inside _match list
   Future<void> fetchFavoriteTournamentData() async {
     try {
       await FirebaseFirestore.instance
@@ -36,6 +36,8 @@ class FavoriteTournamentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //intput: tournament
+  //output: setting tournament favorite in the Firebase and in the local list
   void FavoriteTournament(Tournament tournament) async {
     bool isExist = false;
 

@@ -1,23 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
-import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
-import 'package:provider/provider.dart';
 
 class TournamentProvider extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   bool saving = false;
   final List<Tournament> tournaments = <Tournament>[];
 
+  //output: copy of tournaments
   List<Tournament> get Tournaments {
     return [...tournaments];
   }
 
+  //input: tournament Id
+  //output: Tournament with the tId as Id
+  Tournament findTournament(String tId) {
+    return tournaments.firstWhere((element) => element.Id == tId);
+  }
+
+  //input: tournament Id
+  //output: delete the tournament with the tId as his Id
+  void deleteTournament(String tId) {
+    FirebaseFirestore.instance.collection("tournaments").doc(tId).delete();
+    tournaments.remove(findTournament(tId));
+    notifyListeners();
+  }
+
+  //output: getting data from firebase and putting it inside tournaments list
   Future<void> fetchTournamentData(context) async {
-    //List<Tournament> Ftournaments =
-    //    Provider.of<FavoriteTournamentProvider>(context).FavoriteTournaments;
     try {
       await FirebaseFirestore.instance.collection('tournaments').get().then(
         (QuerySnapshot value) {
@@ -26,11 +37,11 @@ class TournamentProvider extends ChangeNotifier {
               Tournament newT = Tournament(
                   name: result["name"],
                   isDone: result["IsDone"],
-                  Admin: result["admin"],
+                  admin: result["admin"],
                   icon: result["icon"],
                   Id: result.id,
                   isSearchingWinner: result["isSearchingWinner"],
-                  tournamentType: result["tournamentType"]);
+                  tournamentType: result.data().toString().contains("tournamentType") ? result["tournamentType"] : "");
 
               tournaments.add(newT);
             },
@@ -44,6 +55,8 @@ class TournamentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //input: listNameController, context, iconSelected
+  //output: add new Tournament to Firebase and the local list
   Future<String> addTournamentToFirebase(
       TextEditingController listNameController, BuildContext context, int iconSelected) async {
     User? authResult = _auth.currentUser;
@@ -72,13 +85,11 @@ class TournamentProvider extends ChangeNotifier {
       tournaments.add(Tournament(
           name: listNameController.text.toString(),
           isDone: false,
-          Admin: authResult!.uid,
+          admin: authResult!.uid,
           icon: iconSelected,
           Id: Id,
           isSearchingWinner: false,
           tournamentType: ""));
-
-      //Navigator.of(context).pop();
     }
     if (isExist == true) {
       showInSnackBar("This list already exists", context, Theme.of(context).scaffoldBackgroundColor);
@@ -93,6 +104,8 @@ class TournamentProvider extends ChangeNotifier {
     return Id;
   }
 
+  //intput: tournamentType, tId
+  //output: update the tournamentType of the tournament in Firebase and the local list
   Future<void> updateTornamentType(String tournamentType, String tId) async {
     await FirebaseFirestore.instance.collection("tournaments").doc(tId).update({"tournamentType": tournamentType});
 
@@ -100,6 +113,8 @@ class TournamentProvider extends ChangeNotifier {
     t.tournamentType = tournamentType;
   }
 
+  //intput: tid, s
+  //output: update the isSearchingWinner of the tournament in Firebase and the local list
   Future<void> updateTornamentWinnerSearching(String tId, bool s) async {
     await FirebaseFirestore.instance.collection("tournaments").doc(tId).update({"isSearchingWinner": s});
 
@@ -107,6 +122,8 @@ class TournamentProvider extends ChangeNotifier {
     t.isSearchingWinner = s;
   }
 
+  //intput: listNameController, context, iconSelected, tournament
+  //output: update the name and icon of the tournament in Firebase and the local list
   void updateTournamentToFirebase(
     TextEditingController listNameController,
     BuildContext context,
@@ -146,34 +163,14 @@ class TournamentProvider extends ChangeNotifier {
       });
     }));
 
-    // FirebaseFirestore.instance.collection('userFavorite').get().then(((QuerySnapshot value) {
-    //   value.docs.forEach((element) {
-    //     FirebaseFirestore.instance
-    //         .collection('userFavorite')
-    //         .doc(element.id)
-    //         .collection('tournament')
-    //         .get()
-    //         .then((QuerySnapshot value) {
-    //       value.docs.forEach((result) {
-    //         if (result.id == tournament.name) {
-    //           FirebaseFirestore.instance
-    //               .collection("userFavorite")
-    //               .doc(element.id)
-    //               .collection("tournament")
-    //               .doc(result.id)
-    //               .update({"icon": iconSelected});
-    //         }
-    //       });
-    //     });
-    //   });
-    // }));
-
     Navigator.of(context).pop();
 
     listNameController.clear();
     notifyListeners();
   }
 
+  //intput: value, context, color
+  //output: make visual SnackBar with error message
   void showInSnackBar(String value, BuildContext context, Color color) {
     ScaffoldMessenger.of(context)?.removeCurrentSnackBar();
 

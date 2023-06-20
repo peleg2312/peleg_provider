@@ -5,11 +5,10 @@ import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dar
 import 'package:flutter_complete_guide/provider/match_provider.dart';
 import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
-import 'package:flutter_complete_guide/screens/Auth/login_screen.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/main_page.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/Auth/register.dart';
+import 'screens/Auth/register_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +17,10 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  //FireBaseAuthenticaion fireBaseAuthenticaion = FireBaseAuthenticaion();
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
+  //input: context
+  //output: if the device have User login it open HomePageWidget() else AuthScreen()
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

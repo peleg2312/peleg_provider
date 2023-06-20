@@ -13,10 +13,10 @@ class TeamProvider extends ChangeNotifier {
     return [..._teams];
   }
 
-  //output: getting data from firebase and putting it inside _teams List
+  //output: getting data from firebase and putting it inside _teams list
   Future<void> fetchTeamData(context) async {
     try {
-      await FirebaseFirestore.instance.collection('tournaments').get().then(
+      await FirebaseFirestore.instance.collection('teams').get().then(
         (QuerySnapshot value) {
           value.docs.forEach(
             (result) {
@@ -38,29 +38,40 @@ class TeamProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //input: Team
+  //output: delete the Team from the app
+  void deleteTeam(Team team) {
+    FirebaseFirestore.instance.collection("teams").doc(team.id).delete();
+    _teams.remove(_teams.firstWhere((element) => element.id == team.id));
+    notifyListeners();
+  }
+
   //input: context, listNameController, tId
   //output: adding new Team to _teams and Firebase
-  Future<void> addTeamToFireBase(BuildContext context, TextEditingController listNameController, String tId) async {
+  Future<String> addTeamToFireBase(BuildContext context, TextEditingController listNameController, String tId) async {
     saving = true;
-    QuerySnapshot query = await FirebaseFirestore.instance.collection("Teams").get();
+    QuerySnapshot query = await FirebaseFirestore.instance.collection("teams").get();
 
     String Id = "";
-    await FirebaseFirestore.instance
-        .collection("Teams")
-        .add({"tournamentId": tId, "name": listNameController.text, "userId": _auth.currentUser!.uid}).then(
-            (value) => Id = value.id);
+    await FirebaseFirestore.instance.collection("teams").add({
+      "tournamentId": tId,
+      "name": listNameController.text,
+      "userId": _auth.currentUser!.uid,
+      "gamePlayed": 0,
+    }).then((value) => Id = value.id);
 
     _teams.add(Team(tId: tId, id: Id, userId: _auth.currentUser!.uid, name: listNameController.text, gamePlayed: 0));
     notifyListeners();
+    return Id;
   }
 
   //input: context, name, team
   //output: update the name of the team in the local List and in the Firebase
   Future<void> updateTeamNameFromFireBase(BuildContext context, String name, Team team) async {
-    QuerySnapshot query = await FirebaseFirestore.instance.collection("Teams").get();
+    QuerySnapshot query = await FirebaseFirestore.instance.collection("teams").get();
 
     String Id = team.id;
-    await FirebaseFirestore.instance.collection("Teams").doc(Id).update({
+    await FirebaseFirestore.instance.collection("teams").doc(Id).update({
       "name": name,
     });
 
@@ -76,13 +87,17 @@ class TeamProvider extends ChangeNotifier {
     return _teams.firstWhere((element) => element.id == id);
   }
 
+  Team findMatchUp(String? id, int gamePlayed) {
+    return _teams.firstWhere((element) => element.id == id && element.gamePlayed == gamePlayed);
+  }
+
   //input: context, team
   //output: update the team gamePlayed count in Firebase and in the local list
   Future<void> updateTeamGamePlayedFromFireBase(BuildContext context, String team) async {
-    QuerySnapshot query = await FirebaseFirestore.instance.collection("Teams").get();
+    QuerySnapshot query = await FirebaseFirestore.instance.collection("teams").get();
     Team t = _teams.firstWhere((element) => element.id == team);
     String Id = team;
-    await FirebaseFirestore.instance.collection("Teams").doc(Id).update({
+    await FirebaseFirestore.instance.collection("teams").doc(Id).update({
       "gamePlayed": t.gamePlayed,
     });
     t.gamePlayed++;

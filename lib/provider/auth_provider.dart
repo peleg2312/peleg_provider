@@ -8,9 +8,10 @@ class AuthProvider extends ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   var isLoading = false;
   bool saving = false;
+  late String? userName = _auth.currentUser?.displayName;
 
   //input: email, password, username, isLogin ,ctx
-  //output: creating/sign in your account
+  //output: creating/login to your account
   void submitAuthForm(
     String email,
     String password,
@@ -27,6 +28,7 @@ class AuthProvider extends ChangeNotifier {
           email: email,
           password: password,
         );
+        userName = authResult.user?.displayName;
       } else {
         authResult = await _auth.createUserWithEmailAndPassword(
           email: email,
@@ -37,6 +39,7 @@ class AuthProvider extends ChangeNotifier {
           'email': email,
         });
         authResult.user?.updateDisplayName(username);
+        userName = username;
       }
     } on PlatformException catch (err) {
       String? message = 'An error occurred, pelase check your credentials!';

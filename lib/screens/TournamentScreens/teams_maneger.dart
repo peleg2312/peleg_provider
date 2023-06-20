@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/model/team.dart';
+import 'package:flutter_complete_guide/model/tournament.dart';
 import 'package:flutter_complete_guide/provider/match_provider.dart';
 import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/edit_tournament.dart';
 import 'package:provider/provider.dart';
 
 class TeamsManeger extends StatefulWidget {
@@ -17,10 +19,10 @@ class TeamsManeger extends StatefulWidget {
 
 class _TeamsManegerState extends State<TeamsManeger> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<String> teams = <String>[];
+  List<Team> teams = <Team>[];
   TextEditingController listNameController = new TextEditingController();
-  String tournamentType = "roundrobin";
-  String _dropDownValue = "Points";
+  String tournamentType = "";
+  int Id = 0;
 
   //input: context
   //output: create new screen that lets you to add team and choose the tournamentType and create the matches for you base on the type
@@ -56,17 +58,24 @@ class _TeamsManegerState extends State<TeamsManeger> {
                 child: FloatingActionButton.extended(
                   backgroundColor: Colors.red,
                   onPressed: () async {
-                    await Provider.of<TournamentProvider>(context, listen: false)
-                        .updateTornamentType(tournamentType, widget.tId);
-                    if (tournamentType == "knockout") {
-                      Provider.of<MatchProvider>(context, listen: false).createKnockOutSchedule(widget.tId, context);
+                    if (tournamentType == "") {
+                      showInSnackBar("please choose tournament type", context, Colors.red);
+                    } else if (teams.length < 2) {
+                      showInSnackBar("please add at least 2 teams", context, Colors.red);
                     } else {
-                      Provider.of<MatchProvider>(context, listen: false).createRoundRobinSchedule(widget.tId, context);
-                    }
+                      await Provider.of<TournamentProvider>(context, listen: false)
+                          .updateTornamentType(tournamentType, widget.tId);
+                      if (tournamentType == "knockout") {
+                        Provider.of<MatchProvider>(context, listen: false).createKnockOutSchedule(widget.tId, context);
+                      } else {
+                        Provider.of<MatchProvider>(context, listen: false)
+                            .createRoundRobinSchedule(widget.tId, context);
+                      }
 
-                    Navigator.of(context, rootNavigator: true).pop();
-                    Navigator.of(context, rootNavigator: true).pop();
-                    setState(() {});
+                      Navigator.of(context, rootNavigator: true).pop();
+                      Navigator.of(context, rootNavigator: true).pop();
+                      setState(() {});
+                    }
                   },
                   label: Text(
                     "Finish",
@@ -85,23 +94,10 @@ class _TeamsManegerState extends State<TeamsManeger> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(40), color: Colors.red),
-                height: 30,
-                width: 80,
-                margin: new EdgeInsets.only(left: 15.0, top: 60.0),
-                child: TextButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: 15,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      "BACK",
-                      style: TextStyle(color: Colors.white),
-                    ))),
+              height: 30,
+              width: 80,
+              margin: new EdgeInsets.only(left: 15.0, top: 60.0),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 17.0, top: 20),
               child: Text(
@@ -232,7 +228,7 @@ class _TeamsManegerState extends State<TeamsManeger> {
                           ),
                         ),
                       ),
-                      teams.isEmpty == true
+                      teams.isEmpty
                           ? Align(
                               alignment: Alignment.center,
                               child: Container(
@@ -253,9 +249,41 @@ class _TeamsManegerState extends State<TeamsManeger> {
                                       height: 70,
                                       child: Center(
                                         child: ListTile(
+                                          trailing: IconButton(
+                                              icon: Icon(
+                                                Icons.delete,
+                                              ),
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: ((context) => AlertDialog(
+                                                          title: Text("Team Delete"),
+                                                          content: Text("you sure you want to delete the team?"),
+                                                          actions: [
+                                                            TextButton(
+                                                              child: Text('No'),
+                                                              onPressed: () {
+                                                                Navigator.of(context).pop(true);
+                                                              },
+                                                            ),
+                                                            TextButton(
+                                                              child: Text('Yes'),
+                                                              onPressed: () {
+                                                                Provider.of<TeamProvider>(context, listen: false)
+                                                                    .deleteTeam(teams[index]);
+                                                                Navigator.of(context).pop();
+                                                                setState(() {
+                                                                  teams.remove(teams.firstWhere(
+                                                                      (element) => element.id == teams[index].id));
+                                                                });
+                                                              },
+                                                            )
+                                                          ],
+                                                        )));
+                                              }),
                                           key: new Key(index.toString()),
                                           title: Text(
-                                            teams[index],
+                                            teams[index].name,
                                             style: TextStyle(
                                                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 20),
                                           ),
@@ -272,21 +300,6 @@ class _TeamsManegerState extends State<TeamsManeger> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  //output: new Container with back button
-  Container _getToolbar() {
-    return new Container(
-      margin: new EdgeInsets.only(left: 10.0, top: 40.0),
-      child: Row(
-        children: [
-          new BackButton(color: Colors.black),
-          SizedBox(
-            width: 10,
-          ),
-        ],
       ),
     );
   }
@@ -322,17 +335,22 @@ class _TeamsManegerState extends State<TeamsManeger> {
             actions: [
               TextButton(
                   onPressed: (() {
-                    setState(() {
-                      if (listNameController.text == null ||
-                          listNameController.text.isEmpty ||
-                          listNameController.text == "") {
-                        showInSnackBar("Enter Valid Name", context, Colors.red);
-                        return;
-                      }
-                      teams.add(listNameController.text);
-                      Provider.of<TeamProvider>(context, listen: false)
-                          .addTeamToFireBase(context, listNameController, widget.tId);
-                      Navigator.of(context).pop();
+                    if (listNameController.text == null ||
+                        listNameController.text.isEmpty ||
+                        listNameController.text == "") {
+                      showInSnackBar("Enter Valid Name", context, Colors.red);
+                      return;
+                    }
+
+                    Navigator.of(context).pop();
+
+                    Provider.of<TeamProvider>(context, listen: false)
+                        .addTeamToFireBase(context, listNameController, widget.tId)
+                        .then((value) {
+                      setState(() {
+                        teams.add(
+                            new Team(name: listNameController.text, id: value, tId: "", userId: "", gamePlayed: 0));
+                      });
                     });
                   }),
                   child: Text(

@@ -76,7 +76,7 @@ class _EditTournamentState extends State<EditTournament> {
                 child: IconButton(
                     color: Colors.white70,
                     onPressed: () {
-                      Provider.of<TournamentProvider>(context)
+                      Provider.of<TournamentProvider>(context, listen: false)
                           .updateTournamentToFirebase(listNameController, context, IconPicker, widget.tournament);
                     },
                     icon: Icon(Icons.arrow_forward)))
@@ -170,6 +170,8 @@ class _EditTournamentState extends State<EditTournament> {
     super.dispose();
   }
 
+  //input: context
+  //output: new Container with back button
   Container _getToolbar(BuildContext context) {
     return new Container(
       margin: new EdgeInsets.only(left: 10.0, top: 40.0),

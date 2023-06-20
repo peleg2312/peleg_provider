@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/Widget/singinContainer.dart';
 import 'package:flutter_complete_guide/provider/auth_provider.dart';
-import 'package:flutter_complete_guide/screens/Auth/register.dart';
+import 'package:flutter_complete_guide/screens/Auth/register_screen.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
@@ -18,6 +17,7 @@ class _SignInPageState extends State<SignInPage> {
   var _userName = '';
   var _userPassword = '';
 
+  //output: if valid login to your account
   void _trySubmit() {
     final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
@@ -26,11 +26,10 @@ class _SignInPageState extends State<SignInPage> {
       _formKey.currentState!.save();
       Provider.of<AuthProvider>(context, listen: false)
           .submitAuthForm(_userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin, context);
-      // Navigator.push(
-      //context, MaterialPageRoute(builder: (context) => AuthScreen()));
     }
   }
 
+  //output: new widget InkWell
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -50,6 +49,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+  //output: new widget Stack with TextFormField
   Widget _emailWidget() {
     return Stack(
       children: [
@@ -66,8 +66,12 @@ class _SignInPageState extends State<SignInPage> {
           onSaved: (value) {
             _userEmail = value!;
           },
+          style: TextStyle(
+            fontSize: 22.0,
+            color: Colors.white70,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
-            // hintText: 'Enter your full name',
             labelText: 'Email',
             labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
             enabledBorder: UnderlineInputBorder(
@@ -81,6 +85,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+  //output: new widget Stack with TextFormField
   Widget _passwordWidget() {
     return Stack(
       children: [
@@ -97,6 +102,11 @@ class _SignInPageState extends State<SignInPage> {
           onSaved: (value) {
             _userPassword = value!;
           },
+          style: TextStyle(
+            fontSize: 22.0,
+            color: Colors.white70,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             labelText: 'Password',
             labelStyle: TextStyle(color: Colors.white54, fontWeight: FontWeight.w500, fontSize: 13),
@@ -111,6 +121,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+  //output: new widget Column with InkWell
   Widget _submitButton() {
     final isLoading = Provider.of<AuthProvider>(context, listen: true).isLoading;
     return Align(
@@ -119,8 +130,6 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             InkWell(
               onTap: () {
-                // Navigator.push(
-                //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
                 _trySubmit();
               },
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -130,7 +139,7 @@ class _SignInPageState extends State<SignInPage> {
                       color: Color.fromRGBO(76, 81, 93, 1), fontSize: 25, fontWeight: FontWeight.w500, height: 1.6),
                 ),
                 SizedBox.fromSize(
-                  size: Size.square(70.0), // button width and height
+                  size: Size.square(70.0),
                   child: ClipOval(
                     child: Material(
                       color: Color.fromRGBO(76, 81, 93, 1),
@@ -144,6 +153,7 @@ class _SignInPageState extends State<SignInPage> {
         ));
   }
 
+  //output: new widget Container with InkWell
   Widget _createAccountLabel() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 20),
@@ -168,6 +178,8 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+  //input: context
+  //output: new screen where you can login into you account
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -176,7 +188,6 @@ class _SignInPageState extends State<SignInPage> {
         height: height,
         child: Stack(
           children: [
-            Positioned(height: MediaQuery.of(context).size.height * 0.50, child: SigninContainer()),
             SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -186,7 +197,7 @@ class _SignInPageState extends State<SignInPage> {
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
-                          SizedBox(height: height * .55),
+                          SizedBox(height: (height * .4) + 80),
                           _emailWidget(),
                           SizedBox(height: 20),
                           _passwordWidget(),

@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/components/IconList.dart';
+import 'package:flutter_complete_guide/components/Icon_list.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/teams_maneger.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +16,8 @@ class _NewTournamentState extends State<NewTournament> {
   TextEditingController listNameController = new TextEditingController();
   String tId = "";
 
+  //input: context
+  //output: screen where you can create new tournament
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +32,7 @@ class _NewTournamentState extends State<NewTournament> {
               height: 50,
               child: TextFormField(
                 textAlign: TextAlign.center,
+                key: ValueKey("name"),
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
@@ -58,11 +60,8 @@ class _NewTournamentState extends State<NewTournament> {
                     BoxDecoration(borderRadius: BorderRadius.circular(50), color: Color.fromARGB(255, 193, 67, 75)),
                 child: IconButton(
                     color: Colors.white70,
-                    onPressed: () async {
-                      await Provider.of<TournamentProvider>(context, listen: false)
-                          .addTournamentToFirebase(listNameController, context, IconPicker)
-                          .then((value) => tId = value);
-                      _TeamManeger(tId);
+                    onPressed: () {
+                      _trySubmit();
                     },
                     icon: Icon(Icons.arrow_forward)))
           ],
@@ -141,6 +140,20 @@ class _NewTournamentState extends State<NewTournament> {
     );
   }
 
+  //output: if valid creating new tournament
+  Future<void> _trySubmit() async {
+    FocusScope.of(context).unfocus();
+
+    if (listNameController.text.isNotEmpty && IconPicker != -1) {
+      await Provider.of<TournamentProvider>(context, listen: false)
+          .addTournamentToFirebase(listNameController, context, IconPicker)
+          .then((value) => tId = value);
+      _TeamManeger(tId);
+    }
+  }
+
+  //input: tId
+  //output: open new screen with animation and move the tId to the new screen
   void _TeamManeger(String tId) async {
     Navigator.of(context).push(
       new PageRouteBuilder(
@@ -178,6 +191,5 @@ class _NewTournamentState extends State<NewTournament> {
         ),
       ),
     );
-    //Navigator.of(context).pushNamed('/new');
   }
 }

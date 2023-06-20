@@ -7,6 +7,8 @@ class Background extends StatelessWidget {
 
   const Background({Key? key, required this.child}) : super(key: key);
 
+  //input: Widget child
+  //output: decorated container with the child in it
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -30,8 +32,7 @@ class Background extends StatelessWidget {
           Positioned(
             top: 50,
             right: 30,
-            child:
-                Image.asset("assets/images/main.png", width: size.width * 0.35),
+            child: Image.asset("assets/images/main.png", width: size.width * 0.35),
           ),
           Positioned(
             bottom: 0,

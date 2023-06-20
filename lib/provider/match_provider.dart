@@ -19,7 +19,7 @@ class MatchProvider extends ChangeNotifier {
     return _matches.where((element) => element.tId == tourId).toList();
   }
 
-  //output: getting data from firebase and putting it inside _match List
+  //output: getting data from firebase and putting it inside _match list
   Future<void> fetchMatchData(context) async {
     try {
       await FirebaseFirestore.instance.collection('matches').get().then(
@@ -27,7 +27,7 @@ class MatchProvider extends ChangeNotifier {
           value.docs.forEach(
             (result) {
               GameMatch newM = GameMatch(
-                  winnerId: result["winnerId"],
+                  winnerId: result.data().toString().contains("winnerId") ? result["winnerId"] : null,
                   tId: result["tournamentId"],
                   awayTeamId: result["awayTeamId"],
                   homeTeamId: result["homeTeamId"],
@@ -72,8 +72,6 @@ class MatchProvider extends ChangeNotifier {
 
     GameMatch m = _matches.firstWhere((element) => element.id == match.id);
     m.winnerId = winnerId;
-
-    Provider.of<TeamProvider>(ctx, listen: false).updateTeamGamePlayedFromFireBase(ctx, winnerId);
   }
 
   //input: tid, ctx
@@ -103,6 +101,7 @@ class MatchProvider extends ChangeNotifier {
   //input: winnerId, match, ctx, tId, tournamentType
   //output: add new GameMatch to _matches if isWinnner == true or "knockout" == tournamentType and then update the tornament winnerSearching and update the match winner id and team GameCount
   void matchWin(String winnerId, GameMatch match, BuildContext ctx, String tId, String tournamentType) async {
+    await updateMatchFromFireBase(winnerId, match, ctx);
     Tournament tournament =
         Provider.of<TournamentProvider>(ctx, listen: false).Tournaments.firstWhere((element) => element.Id == tId);
     bool isWinner = tournament.isSearchingWinner;
@@ -110,15 +109,36 @@ class MatchProvider extends ChangeNotifier {
     GameMatch vTeam;
     if (isWinner == true && "knockout" == tournamentType) {
       vTeam = _matches.firstWhere((element) {
-        Team winner = Provider.of<TeamProvider>(ctx, listen: false).findTeam(element.winnerId);
-        addMatchToFireBase(winnerId, winner.id, tId);
-        return element.winnerId != null && element.id != winnerId && winner.gamePlayed == t.gamePlayed;
+        return element.winnerId != null &&
+            element.id != winnerId &&
+            Provider.of<TeamProvider>(ctx, listen: false).findTeam(element.winnerId).gamePlayed == t.gamePlayed &&
+            element.tId == tId;
       });
+      addMatchToFireBase(winnerId, vTeam.winnerId!, tId);
+      await Provider.of<TeamProvider>(ctx, listen: false).updateTeamGamePlayedFromFireBase(ctx, vTeam.winnerId!);
+      await Provider.of<TeamProvider>(ctx, listen: false).updateTeamGamePlayedFromFireBase(ctx, winnerId);
     }
-    await Provider.of<TournamentProvider>(ctx, listen: false).updateTornamentWinnerSearching(tId, !isWinner);
     await updateMatchFromFireBase(winnerId, match, ctx);
+    await Provider.of<TournamentProvider>(ctx, listen: false).updateTornamentWinnerSearching(tId, !isWinner);
     notifyListeners();
   }
+
+  // void matchWin(String winnerId, GameMatch match, BuildContext ctx, String tId, String tournamentType) async {
+  //   Tournament tournament =
+  //       Provider.of<TournamentProvider>(ctx, listen: false).Tournaments.firstWhere((element) => element.Id == tId);
+  //   bool isWinner = tournament.isSearchingWinner;
+  //   Team t = Provider.of<TeamProvider>(ctx, listen: false).findTeam(winnerId);
+  //   GameMatch vTeam;
+  //   if (isWinner == true && "knockout" == tournamentType) {
+  //     vTeam = _matches.firstWhere((element) => element.winnerId != null && element.id != winnerId);
+
+  //     Team winner = Provider.of<TeamProvider>(ctx, listen: false).findTeam(vTeam.winnerId);
+  //     addMatchToFireBase(winnerId, winner.id, tId);
+  //   }
+  //   await Provider.of<TournamentProvider>(ctx, listen: false).updateTornamentWinnerSearching(tId, !isWinner);
+  //   await updateMatchFromFireBase(winnerId, match, ctx);
+  //   notifyListeners();
+  // }
 
   //intput: tId, ctx
   //output: add new GameMatch to _matches as many times as number of teams pair you can make

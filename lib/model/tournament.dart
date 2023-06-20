@@ -4,17 +4,19 @@ import 'package:flutter/cupertino.dart';
 class Tournament {
   String name;
   final bool isDone;
-  final String Admin;
+  final String admin;
   int icon;
   bool favorite = false;
   final String Id;
   bool isSearchingWinner;
   String tournamentType;
 
+  //input: name, isDone, admin, icon, Id, isSearchingWinner, tournamentType
+  //output: new Tournament
   Tournament(
       {required this.name,
       required this.isDone,
-      required this.Admin,
+      required this.admin,
       required this.icon,
       required this.Id,
       required this.isSearchingWinner,

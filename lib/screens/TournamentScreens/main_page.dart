@@ -3,12 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/components/Icon_list.dart';
 import 'package:flutter_complete_guide/model/tournament.dart';
+import 'package:flutter_complete_guide/provider/auth_provider.dart';
 import 'package:flutter_complete_guide/provider/favorite_tournament_provider.dart';
 import 'package:flutter_complete_guide/provider/match_provider.dart';
 import 'package:flutter_complete_guide/provider/team_provider.dart';
 import 'package:flutter_complete_guide/provider/tournament_provider.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/edit_tournament.dart';
-import 'package:flutter_complete_guide/screens/TournamentScreens/my_tournament_edit.dart';
+import 'package:flutter_complete_guide/screens/TournamentScreens/my_tournament_detail.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/new_tournament.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/tournament_detail.dart';
 import 'package:flutter_complete_guide/screens/TournamentScreens/favorite_tournament.dart';
@@ -116,7 +117,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           'Hello, ',
                           style: TextStyle(color: Colors.white70, fontFamily: 'Readex Pro', fontSize: 40),
                         ),
-                        Text(authResult!.displayName.toString(),
+                        Text(Provider.of<AuthProvider>(context).userName!,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 255, 89, 99),
                                 fontFamily: 'Readex Pro',
@@ -467,7 +468,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   }
 
   //input: context, t
-  //output: new
+  //output: decorated container for dropDown menu builder
   Widget _customDropDownMenu(BuildContext context, Tournament? t) {
     return Container(
       height: 300,
@@ -476,6 +477,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
+  //input: context, item, isSelected
+  //output: decorated Stack for dropDown menu item builder
   Widget _customPopupItemBuilder(BuildContext context, Tournament item, bool isSelected) {
     return Stack(children: [
       Padding(
@@ -499,7 +502,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     ]);
   }
 
-  Widget ScreenAnimation(BuildContext context, Animation<double> animation, Animation<double> s, Widget child) {
+  //input: context, animation, animation2, child
+  //output: make an animation transition when you move pages
+  Widget ScreenAnimation(
+      BuildContext context, Animation<double> animation, Animation<double> animation2, Widget child) {
     return new ScaleTransition(
       scale: new Tween<double>(
         begin: 1.5,
@@ -533,24 +539,31 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
+  //output: navigate to NewTournament() screen with ScreenAnimation
   void _addTaskPressed() async {
     Navigator.of(context).push(
       new PageRouteBuilder(pageBuilder: (_, __, ___) => new NewTournament(), transitionsBuilder: ScreenAnimation),
     );
   }
 
+  //input: List<Tournament> arr
+  //output: navigate to LikedTournament() screen with ScreenAnimation and transfer arr to the new screen
   void _favoritePage(List<Tournament> arr) async {
     Navigator.of(context).push(
       new PageRouteBuilder(pageBuilder: (_, __, ___) => new LikedTournament(arr), transitionsBuilder: ScreenAnimation),
     );
   }
 
+  //input: List<Tournament> arr
+  //output: navigate to MyTournament() screen with ScreenAnimation and transfer arr to the new screen
   void _YourTournamentPage(List<Tournament> arr) async {
     Navigator.of(context).push(
       new PageRouteBuilder(pageBuilder: (_, __, ___) => new MyTournament(arr), transitionsBuilder: ScreenAnimation),
     );
   }
 
+  //input: tournament
+  //output: navigate to EditTournament() screen with ScreenAnimation and transfer tournament to the new screen
   void _UpdatePressed(Tournament tournament) async {
     Navigator.of(context).push(
       new PageRouteBuilder(
@@ -561,6 +574,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
+  //input: tournament
+  //output: if you are the admin of the tournament navigate to MyDetailPage() screen else navigate to DetailPage() screen with ScreenAnimation and transfer tournament to the new screen
   void _DetailPressed(Tournament tournament) async {
     Navigator.of(context).push(
       new PageRouteBuilder(
@@ -575,6 +590,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
+  //output: log you out of your account
   void LogOut() {
     showDialog(
         context: context,
@@ -593,13 +609,15 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   onPressed: () {
                     FirebaseAuth.instance.signOut();
                     Navigator.of(ctx).pop();
+                    setState(() {});
                   },
                 )
               ],
             )));
   }
 
-  //input:
+  //input: likedTournament, tournaments
+  //output: new List<Tournament> that contain every item in tournament that have the same id as item in likedTournament
   List<Tournament> SortLikedTournament(List<String> likedTournament, List<Tournament> tournaments) {
     List<Tournament> liked = <Tournament>[];
 
@@ -613,12 +631,15 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     return liked;
   }
 
+  //output: set myTournamentViewMore to !myTournamentViewMore
   void SetMyTournamentViewMore() {
     setState(() {
       myTournamentViewMore = !myTournamentViewMore;
     });
   }
 
+  //input: likedTournament, tournaments
+  //output: if item name in likedTournament is same as item name in tournaments, tournaments item favorite set to true
   void SetFavorite(List<Tournament> likedTournament, List<Tournament> tournaments) {
     for (var ftournament in likedTournament) {
       for (var tournament in tournaments) {
@@ -630,7 +651,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   }
 
   //input: tournaments
-  //output: new List<Tournament>
+  //output: new List<Tournament> that contain every tournaments you created
   List<Tournament> AdminTournament(List<Tournament> tournaments) {
     User? authResult = FirebaseAuth.instance.currentUser;
     List<Tournament> myTournament = <Tournament>[];
